@@ -13,8 +13,8 @@ function init(db) {
         next();
     });
     const users = new Users.default(db);
-    router.get("/", async (req,res) =>{
-        return("hello world")
+    router.get('/', (req,res) =>{
+        res.send("hello world")
     })
     router.post("/user/login", async (req, res) => {
         try {
@@ -74,10 +74,10 @@ function init(db) {
     });
 
     router
-        .route("/user/:user_id(\\d+)")
+        .route("/user/:login")
         .get(async (req, res) => {
             try {
-                const user = await users.get(req.params.user_id);
+                const user = await users.get(req.params.login);
                 if (!user)
                     res.sendStatus(404);
                 else
@@ -87,12 +87,15 @@ function init(db) {
                 res.status(500).send(e);
             }
         })
-        .delete((req, res, next) => {
+        .delete(async (req, res, next) => {
             try{
-                const result = users.delete(req.params.user_id);
-                if (result == 'Ok, user deleted'){//user n'existe plus
-                    res.sendStatus(201)
-                    res.send(`deleted user ${req.params.user_id}`);
+                //let userid = await users.checkpassword(login, password);
+                let result = await users.delete(req.params.login);
+                if (result == 'ok'){//user n'existe plus
+                    res.status(200).json({
+                        status: 200,
+                        message: "Utilisateur supprimé"
+                    })
                 } else
                     res.send(404);
             }
@@ -108,16 +111,75 @@ function init(db) {
             }
         })
 
-    router.put("/user", (req, res) => {
-        const { login, password, lastname, firstname } = req.body;
-        if (!login || !password || !lastname || !firstname) {
-            res.status(400).send("Missing fields");
-        } else {
-            users.create(login, password, lastname, firstname)
-                .then((user_id) => res.status(201).send({ id: user_id }))
-                .catch((err) => res.status(500).send(err));
-        }
-    });
+    router
+        .route("/user")
+        .post(async (req, res) => {
+            try {
+                const { login, password, lastname, firstname } = req.body;
+                // Erreur sur la requête HTTP
+                if (!login || !password || !lastname || !firstname) {
+                    res.status(400).json({
+                        status: 400,
+                        "message": "Requête invalide : login, password, lastname et firstname nécessaires"
+                    });
+                    return;
+                }
+                if(await users.exists(login)) {
+                    res.status(401).json({
+                        status: 409,
+                        message: "Login existe déjà"
+                    });
+                    return;
+                }
+                let userid = await users.create(login, password, lastname, firstname);
+                if (userid) {
+                    // Avec middleware express-session
+                    req.session.regenerate(function (err) {
+                        if (err) {
+                            res.status(500).json({
+                                status: 500,
+                                message: "Erreur interne"
+                            });
+                        }
+                        else {
+                            // C'est bon, nouvelle session créée
+                            req.session.userid = userid;
+                            res.status(200).json({
+                                status: 200,
+                                message: "Utilisateur créé"
+                            });
+                        }
+                    });
+                    return;
+                }
+                // Faux login : destruction de la session et erreur
+                req.session.destroy((err) => { });
+                res.status(403).json({
+                    status: 403,
+                    message: "login et/ou le mot de passe invalide(s)"
+                });
+                return;
+            }
+            catch (e) {
+                // Toute autre erreur
+                res.status(500).json({
+                    status: 500,
+                    message: "erreur interne",
+                    details: (e || "Erreur inconnue").toString()
+                });
+            }
+        })
+
+        .put( (req, res) => {
+            const { login, password, lastname, firstname } = req.body;
+            if (!login || !password || !lastname || !firstname) {
+                res.status(400).send("Missing fields");
+            } else {
+                users.create(login, password, lastname, firstname)
+                    .then((user_id) => res.status(201).send({ id: user_id }))
+                    .catch((err) => res.status(500).send(err));
+            }
+        });
     return router;
 }
 

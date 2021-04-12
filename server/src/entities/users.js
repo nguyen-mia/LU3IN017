@@ -33,17 +33,16 @@ class Users {
     });
   }
 
-  get(userid) {
+  get(login) {
     return new Promise((resolve, reject) => {
       const req = this.db.prepare(`
-        SELECT * FROM users WHERE rowID=?;
+        SELECT * FROM users WHERE login=?;
       `);
-      req.get([userid], (err,row) => {
+      req.get([login], (err,row) => {
         if(err) {
           console.log(err);
           reject();
         } else {
-          console.log(row)
           resolve(row);
         }      
       });
@@ -55,7 +54,7 @@ class Users {
       const req = this.db.prepare(`
         SELECT login FROM users WHERE login=?;
       `);
-      req.run([login], (err, row) => {
+      req.get([login], (err, row) => {
         if(err) {
           console.log('Erreur SQL: ', err);
           reject();
@@ -67,8 +66,9 @@ class Users {
   }
 
   checkpassword(login, password) {
+    
     return new Promise((resolve, reject) => {
-      req = this.db.prepare(`
+      const req = this.db.prepare(`
         SELECT rowid FROM users WHERE login=? AND password=?;
       `);
       req.get([login, password], (err, row) => {
@@ -82,17 +82,17 @@ class Users {
     });
   }
   
-  delete(user_id) {
+  delete(login) {
     return new Promise((resolve, reject) => {
       const req = this.db.prepare(`
           DELETE from users WHERE login=? 
       `);
-      req.run([user_id], (err) =>{
+      req.run([login], (err, row) =>{
         if (err){
-          console.log(err)
+          console.log('Erreur SQL: ', err)
           reject();
         } else {
-          resolve('Ok, user deleted');
+          resolve('ok');
         }
       });
     });

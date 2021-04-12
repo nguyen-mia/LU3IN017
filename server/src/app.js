@@ -1,4 +1,5 @@
 const path = require('path');
+const dbpath = path.resolve(__dirname, 'db/development.db');
 const api = require('./api.js');
 
 // Détermine le répertoire de base
@@ -7,8 +8,15 @@ console.debug(`Base directory: ${basedir}`);
 
 // Connexion à la bd
 const sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(':memory:');
-
+var db = new sqlite3.Database(dbpath, sqlite3.OPEN_READWRITE, (err) => 
+    {
+        if (err) {
+        console.error(err.message);
+        }else{
+            console.log('Connected to the database.');
+        }
+    }
+);
 express = require('express');
 const app = express()
 api_1 = require("./api.js");
