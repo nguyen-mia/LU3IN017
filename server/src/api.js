@@ -16,7 +16,7 @@ function init(db) {
     router.get('/', (req,res) =>{
         res.send("hello world")
     })
-    router.post("/user/login", async (req, res) => {
+    router.post("/login", async (req, res) => {
         try {
             const { login, password } = req.body;
             // Erreur sur la requête HTTP
@@ -73,11 +73,32 @@ function init(db) {
         }
     });
 
+    
+    router.delete("/logout", async (req, res) => {
+        try {
+            //Destruction de la session et erreur
+            req.session.destroy((err) => { });
+            res.status(200).json({
+                status: 200,
+                message: "Logging out..."
+            });
+            return;
+        }
+        catch (e) {
+            // Toute autre erreur
+            res.status(500).json({
+                status: 500,
+                message: "erreur interne",
+                details: (e || "Erreur inconnue").toString()
+            });
+        }
+    });
+
     router
-        .route("/user/:login")
+        .route("/user/:username")
         .get(async (req, res) => {
             try {
-                const user = await users.get(req.params.login);
+                const user = await users.get(req.params.username);
                 if (!user)
                     res.sendStatus(404);
                 else
@@ -89,8 +110,8 @@ function init(db) {
         })
         .delete(async (req, res, next) => {
             try{
-                //let userid = await users.checkpassword(login, password);
-                let result = await users.delete(req.params.login);
+                //let userid = await users.checkpassword(username, password);
+                let result = await users.delete(req.params.username);
                 if (result == 'ok'){//user n'existe plus
                     res.status(200).json({
                         status: 200,
@@ -180,9 +201,11 @@ function init(db) {
                     .catch((err) => res.status(500).send(err));
             }
         });
+
+
+
     return router;
 }
-
 
 
 exports.default = init;
