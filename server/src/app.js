@@ -1,6 +1,7 @@
 const path = require('path');
 const dbpath = path.resolve(__dirname, 'db/development.db');
-const api = require('./api.js');
+const apiUsers = require('./api/api_users.js');
+const apiAuth = require('./api/api_auth.js');
 
 // Détermine le répertoire de base
 const basedir = path.normalize(path.dirname(__dirname));
@@ -19,14 +20,14 @@ var db = new sqlite3.Database(dbpath, sqlite3.OPEN_READWRITE, (err) =>
 );
 express = require('express');
 const app = express()
-api_1 = require("./api.js");
 const session = require("express-session");
 
 app.use(session({
     secret: "technoweb rocks"
 }));
 
-app.use('/api', api.default(db));
+app.use('/api/user', apiUsers.default(db));
+app.use('/api', apiAuth.default(db));
 
 // Démarre le serveur
 app.on('close', () => {

@@ -33,8 +33,11 @@ class Login extends React.Component {
           const message = response.data["message"];
           this.setState({status:"error", texterror:message})
       } else {
-          this.setState({status:""})
-          this.props.login(response.data["session_key"])
+          this.setState({
+            status:"",
+            login: response.data["session_key"]
+          })
+          //this.props.login(response.data["session_key"])
       }
   }
 
@@ -44,12 +47,13 @@ class Login extends React.Component {
     timeout : 1000,
     headers : {'X-Custom-Header' : 'foobar'}
     });
-    api.post('/user/login/',{
+    api.post('/login/',{
               "login":this.state.login,
               "password":this.state.password,
             })
     .then(response => {
       this.response_login(response);
+      console.log(response)
     });
   }
 
