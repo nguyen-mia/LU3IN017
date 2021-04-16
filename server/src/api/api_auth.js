@@ -13,9 +13,8 @@ function init(db) {
         next();
     });
     const users = new Users.default(db);
-    router.get('/', (req,res) =>{
-        res.send("hello world")
-    })
+
+    //login
     router.post("/login", async (req, res) => {
         try {
             const { login, password } = req.body;
@@ -35,7 +34,7 @@ function init(db) {
                 return;
             }
             let userid = await users.checkpassword(login, password);
-            if (userid) {
+            if (userid && userid != undefined) {
                 // Avec middleware express-session
                 req.session.regenerate(function (err) {
                     if (err) {
@@ -74,7 +73,7 @@ function init(db) {
         }
     });
 
-    
+    //logout
     router.delete("/logout", async (req, res) => {
         try {
             //Destruction de la session et erreur

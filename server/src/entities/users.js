@@ -75,6 +75,10 @@ class Users {
         if(err) {
           console.log('Erreur SQL: ', err);
           reject();
+        }
+        if(row == undefined) {
+          console.log('Erreur SQL: Mauvaise mot de passe');
+          resolve(row);
         } else {
           resolve(row.rowid);
         }
@@ -96,6 +100,24 @@ class Users {
         }
       });
     });
+  }
+
+  update(login, password_new){
+    return new Promise((resolve, reject) => {
+      const req = this.db.prepare(`
+        UPDATE users
+        SET password = ? WHERE login = ?
+      `);
+      req.run([password_new, login], (err, row) =>{
+        if (err){
+          console.log('Erreur SQL: ', err)
+          reject();
+        } else {
+          console.log(row)
+          resolve('ok');
+        }
+      })
+    })
   }
 }
 

@@ -16,43 +16,79 @@ function init(db) {
 
     router
         .route("/:username")
+        //get user
         .get(async (req, res) => {
             try {
                 const user = await users.get(req.params.username);
                 if (!user)
                     res.sendStatus(404);
-                else
-                    res.send(user);
+                else{
+                    res.send(user)                
+                } 
             }
             catch (e) {
                 res.status(500).send(e);
             }
         })
+        //delete user
         .delete(async (req, res, next) => {
             try{
-                //let userid = await users.checkpassword(username, password);
-                let result = await users.delete(req.params.username);
-                if (result == 'ok'){//user n'existe plus
-                    res.status(200).json({
-                        status: 200,
-                        message: "Utilisateur supprimé"
-                    })
-                } else
-                    res.send(404);
+                if(await users.exists(req.params.username)) {
+                    let result = await users.delete(req.params.username);
+                    if (result == 'ok'){//user n'existe plus
+                        res.status(200).json({
+                            status: 200,
+                            message: "Utilisateur supprimé"
+                        })
+                    } else
+                        res.send(404);
+                }else{
+                    res.status(403).json({
+                        status: 403,
+                        message: "login et/ou le mot de passe invalide(s)"
+                    });
+                    return;
+                }
             }
             catch(e){
                 res.status(500).send(e);
             }
         })
+        //update user
         .put(async (req, res) => {
             try{
+                const { login, password_old, password_new } = req.body;
+                let userid = await users.checkpassword(login, password_old);
+                if (userid && userid != undefined) { //mdp ok
+                    let result = await users.update(login, password_new);
+                    if (result == 'ok'){
+                        res.status(200).json({
+                            status: 200,
+                            message: "Mot de passe mis à jour"
+                        })
+                    } else{
+                        res.send(404);
+                    }   
+                }else{
+                    res.status(403).json({
+                        status: 403,
+                        message: "login et/ou le mot de passe invalide(s)"
+                    });
+                    return;
+                }
 
             }catch(e){
-
+                // Toute autre erreur
+                res.status(500).json({
+                status: 500,
+                message: "erreur interne",
+                details: (e || "Erreur inconnue").toString()
+            });
             }
         })
     router    
         .route("/")
+        //create user
         .post(async (req, res) => {
             try {
                 const { login, password, lastname, firstname } = req.body;
@@ -109,19 +145,6 @@ function init(db) {
                 });
             }
         })
-
-        .put( (req, res) => {
-            const { login, password, lastname, firstname } = req.body;
-            if (!login || !password || !lastname || !firstname) {
-                res.status(400).send("Missing fields");
-            } else {
-                users.create(login, password, lastname, firstname)
-                    .then((user_id) => res.status(201).send({ id: user_id }))
-                    .catch((err) => res.status(500).send(err));
-            }
-        });
-
-
 
     return router;
 }
