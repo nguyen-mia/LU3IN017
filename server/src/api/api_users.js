@@ -22,23 +22,23 @@ function init(userdb, msgdb) {
         //create user
         .post(async (req, res) => {
             try {
-                const { login, password, lastname, firstname } = req.body;
+                const { username, password, lastname, firstname } = req.body;
                 // Erreur sur la requête HTTP
-                if (!login || !password || !lastname || !firstname) {
+                if (!username || !password || !lastname || !firstname) {
                     res.status(400).json({
                         status: 400,
-                        "message": "Requête invalide : login, password, lastname et firstname nécessaires"
+                        "message": "Requête invalide : username, password, lastname et firstname nécessaires"
                     });
                     return;
                 }
-                if(await users.exists(login)) {
+                if(await users.exists(username)) {
                     res.status(401).json({
                         status: 409,
-                        message: "Login existe déjà"
+                        message: "Username existe déjà"
                     });
                     return;
                 }
-                let userid = await users.create(login, password, lastname, firstname);
+                let userid = await users.create(username, password, lastname, firstname);
                 if (userid) {
                     // Avec middleware express-session
                     req.session.regenerate(function (err) {
@@ -63,7 +63,7 @@ function init(userdb, msgdb) {
                 req.session.destroy((err) => { });
                 res.status(403).json({
                     status: 403,
-                    message: "login et/ou le mot de passe invalide(s)"
+                    message: "username et/ou le mot de passe invalide(s)"
                 });
                 return;
             }
@@ -107,7 +107,7 @@ function init(userdb, msgdb) {
                 }else{
                     res.status(403).json({
                         status: 403,
-                        message: "login et/ou le mot de passe invalide(s)"
+                        message: "username et/ou le mot de passe invalide(s)"
                     });
                     return;
                 }
@@ -119,10 +119,10 @@ function init(userdb, msgdb) {
         //update user
         .put(async (req, res) => {
             try{
-                const { login, password_old, password_new } = req.body;
-                let userid = await users.checkpassword(login, password_old);
+                const { username, password_old, password_new } = req.body;
+                let userid = await users.checkpassword(username, password_old);
                 if (userid && userid != undefined) { //mdp ok
-                    let result = await users.update(login, password_new);
+                    let result = await users.update(username, password_new);
                     if (result == 'ok'){
                         res.status(200).json({
                             status: 200,
@@ -134,7 +134,7 @@ function init(userdb, msgdb) {
                 }else{
                     res.status(403).json({
                         status: 403,
-                        message: "login et/ou le mot de passe invalide(s)"
+                        message: "username et/ou le mot de passe invalide(s)"
                     });
                     return;
                 }

@@ -3,7 +3,7 @@ class Users {
     this.db = db
     const req1 = `
       CREATE TABLE IF NOT EXISTS users(
-        login VARCHAR(256) NOT NULL PRIMARY KEY,
+        username VARCHAR(256) NOT NULL PRIMARY KEY,
         password VARCHAR(256) NOT NULL,
         lastname VARCHAR(256) NOT NULL,
         firstname VARCHAR(256) NOT NULL
@@ -16,13 +16,13 @@ class Users {
     });
   }
 
-  create(login, password, lastname, firstname) {
+  create(username, password, lastname, firstname) {
     return new Promise((resolve, reject) => {
       const req = this.db.prepare(`
-        INSERT INTO users(login, password, lastname, firstname)
+        INSERT INTO users(username, password, lastname, firstname)
         VALUES(?,?,?,?);
       `);
-      req.run([login, password, lastname, firstname], (err) =>{
+      req.run([username, password, lastname, firstname], (err) =>{
         if (err){
           console.log(err)
           reject();
@@ -33,12 +33,12 @@ class Users {
     });
   }
 
-  get(login) {
+  get(username) {
     return new Promise((resolve, reject) => {
       const req = this.db.prepare(`
-        SELECT * FROM users WHERE login=?;
+        SELECT * FROM users WHERE username=?;
       `);
-      req.get([login], (err,row) => {
+      req.get([username], (err,row) => {
         if(err) {
           console.log(err);
           reject();
@@ -49,12 +49,12 @@ class Users {
     });
   }
 
-  async exists(login) {
+  async exists(username) {
     return new Promise((resolve, reject) => {
       const req = this.db.prepare(`
-        SELECT login FROM users WHERE login=?;
+        SELECT username FROM users WHERE username=?;
       `);
-      req.get([login], (err, row) => {
+      req.get([username], (err, row) => {
         if(err) {
           console.log('Erreur SQL: ', err);
           reject();
@@ -65,13 +65,13 @@ class Users {
     });
   }
 
-  checkpassword(login, password) {
+  checkpassword(username, password) {
     
     return new Promise((resolve, reject) => {
       const req = this.db.prepare(`
-        SELECT rowid FROM users WHERE login=? AND password=?;
+        SELECT rowid FROM users WHERE username=? AND password=?;
       `);
-      req.get([login, password], (err, row) => {
+      req.get([username, password], (err, row) => {
         if(err) {
           console.log('Erreur SQL: ', err);
           reject();
@@ -86,12 +86,12 @@ class Users {
     });
   }
   
-  delete(login) {
+  delete(username) {
     return new Promise((resolve, reject) => {
       const req = this.db.prepare(`
-          DELETE from users WHERE login=? 
+          DELETE from users WHERE username=? 
       `);
-      req.run([login], (err, row) =>{
+      req.run([username], (err, row) =>{
         if (err){
           console.log('Erreur SQL: ', err)
           reject();
@@ -102,13 +102,13 @@ class Users {
     });
   }
 
-  update(login, password_new){
+  update(username, password_new){
     return new Promise((resolve, reject) => {
       const req = this.db.prepare(`
         UPDATE users
-        SET password = ? WHERE login = ?
+        SET password = ? WHERE username = ?
       `);
-      req.run([password_new, login], (err, row) =>{
+      req.run([password_new, username], (err, row) =>{
         if (err){
           console.log('Erreur SQL: ', err)
           reject();

@@ -2,9 +2,10 @@ const path = require('path');
 var Datastore = require('nedb')
 const mongopath = path.resolve(__dirname, 'db/messages.db');
 const sqlpath = path.resolve(__dirname, 'db/development.db');
-const apiUsers = require('./api/api_users.js');
 const apiAuth = require('./api/api_auth.js');
+const apiUsers = require('./api/api_users.js');
 const apiMsg = require('./api/api_messages.js');
+const apiFollows = require('./api/api_follows.js');
 
 // Détermine le répertoire de base
 const basedir = path.normalize(path.dirname(__dirname));
@@ -33,8 +34,9 @@ app.use(session({
     secret: "technoweb rocks"
 }));
 
-app.use('/api/users/', apiUsers.default(db, mongodb.messages));
+app.use('/api/users', apiUsers.default(db, mongodb.messages));
 app.use('/api/messages', apiMsg.default(mongodb.messages));
+app.use('/api/follows', apiFollows.default(db));
 app.use('/api', apiAuth.default(db));
 
 // Démarre le serveur

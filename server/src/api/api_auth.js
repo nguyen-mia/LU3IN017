@@ -17,23 +17,23 @@ function init(db) {
     //login
     router.post("/login", async (req, res) => {
         try {
-            const { login, password } = req.body;
+            const { username, password } = req.body;
             // Erreur sur la requête HTTP
-            if (!login || !password) {
+            if (!username || !password) {
                 res.status(400).json({
                     status: 400,
-                    "message": "Requête invalide : login et password nécessaires"
+                    "message": "Requête invalide : username et password nécessaires"
                 });
                 return;
             }
-            if(! await users.exists(login)) {
+            if(! await users.exists(username)) {
                 res.status(401).json({
                     status: 401,
                     message: "Utilisateur inconnu"
                 });
                 return;
             }
-            let userid = await users.checkpassword(login, password);
+            let userid = await users.checkpassword(username, password);
             if (userid && userid != undefined) {
                 // Avec middleware express-session
                 req.session.regenerate(function (err) {
@@ -45,10 +45,12 @@ function init(db) {
                     }
                     else {
                         // C'est bon, nouvelle session créée
+                        req.session.username = username;
                         req.session.userid = userid;
+                        console.log(req.session.username)
                         res.status(200).json({
                             status: 200,
-                            message: "Login et mot de passe accepté",
+                            message: "Username et mot de passe accepté",
                             session_key: req.session
                         });
                     }
@@ -59,7 +61,7 @@ function init(db) {
             req.session.destroy((err) => { });
             res.status(403).json({
                 status: 403,
-                message: "login et/ou le mot de passe invalide(s)"
+                message: "username et/ou le mot de passe invalide(s)"
             });
             return;
         }
