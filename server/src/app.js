@@ -15,7 +15,7 @@ const sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(sqlpath, sqlite3.OPEN_READWRITE, (err) => 
     {
         if (err) {
-        console.error(err.message);
+            console.error(err.message);
         }else{
             console.log('Connected to the database.');
         }
@@ -33,9 +33,9 @@ app.use(session({
     secret: "technoweb rocks"
 }));
 
-app.use('/api', apiAuth.default(db));
-app.use('/api/users', apiUsers.default(db));
+app.use('/api/users/', apiUsers.default(db, mongodb.messages));
 app.use('/api/messages', apiMsg.default(mongodb.messages));
+app.use('/api', apiAuth.default(db));
 
 // Démarre le serveur
 app.on('close', () => {

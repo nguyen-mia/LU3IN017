@@ -23,7 +23,58 @@ class Messages {
                     resolve(data);
                 }
             })
+            
         });
+    }
+
+    get(){
+        return new Promise ((resolve, reject ) => {
+            this.db.find ({}, (err, data) => {
+                if(err){
+                    reject(err);
+                }else{
+                    resolve(data);
+                }
+            })
+        })
+    }
+
+    getUserMsg(username){
+        return new Promise ((resolve, reject ) => {
+            this.db.find ({author_username : username}, (err, data) => {
+                if(err){
+                    reject(err);
+                }else{
+                    resolve(data);
+                }
+            })
+        })
+    }
+
+    delete(messageid){
+        return new Promise ((resolve, reject ) => {
+            this.db.remove ({_id : messageid}, (err, data) => {
+                if(err){
+                    reject(err);
+                }else{
+                    resolve('ok');
+                }
+            })
+        })
+    }
+
+    search(keyword){
+        let key = new RegExp(keyword, 'i')
+        return new Promise ((resolve, reject) => {
+            this.db.find( { message: key} , (err, data) => {
+              
+                if(err){
+                    reject(err);
+                }else{
+                    resolve(data);
+                } 
+            })
+        })
     }
 
 }

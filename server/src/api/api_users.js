@@ -1,7 +1,8 @@
 const express = require("express");
 const Users = require("../entities/users.js");
+const Messages = require("../entities/messages.js");
 
-function init(db) {
+function init(userdb, msgdb) {
     const router = express.Router();
     // On utilise JSON
     router.use(express.json());
@@ -10,10 +11,71 @@ function init(db) {
     router.use((req, res, next) => {
         console.log('API: method %s, path %s', req.method, req.path);
         console.log('Body', req.body);
+        // console.log('Req %s', req.method, req);
         next();
     });
-    const users = new Users.default(db);
+    const users = new Users.default(userdb);
+    const msg = new Messages.default(msgdb);
 
+    router    
+        .route("/")
+        //create user
+        .post(async (req, res) => {
+            try {
+                const { login, password, lastname, firstname } = req.body;
+                // Erreur sur la requête HTTP
+                if (!login || !password || !lastname || !firstname) {
+                    res.status(400).json({
+                        status: 400,
+                        "message": "Requête invalide : login, password, lastname et firstname nécessaires"
+                    });
+                    return;
+                }
+                if(await users.exists(login)) {
+                    res.status(401).json({
+                        status: 409,
+                        message: "Login existe déjà"
+                    });
+                    return;
+                }
+                let userid = await users.create(login, password, lastname, firstname);
+                if (userid) {
+                    // Avec middleware express-session
+                    req.session.regenerate(function (err) {
+                        if (err) {
+                            res.status(500).json({
+                                status: 500,
+                                message: "Erreur interne"
+                            });
+                        }
+                        else {
+                            // C'est bon, nouvelle session créée
+                            req.session.userid = userid;
+                            res.status(200).json({
+                                status: 200,
+                                message: "Utilisateur créé"
+                            });
+                        }
+                    });
+                    return;
+                }
+                // Faux login : destruction de la session et erreur
+                req.session.destroy((err) => { });
+                res.status(403).json({
+                    status: 403,
+                    message: "login et/ou le mot de passe invalide(s)"
+                });
+                return;
+            }
+            catch (e) {
+                // Toute autre erreur
+                res.status(500).json({
+                    status: 500,
+                    message: "erreur interne",
+                    details: (e || "Erreur inconnue").toString()
+                });
+            }
+        })
     router
         .route("/:username")
         //get user
@@ -86,63 +148,22 @@ function init(db) {
             });
             }
         })
-    router    
-        .route("/")
-        //create user
-        .post(async (req, res) => {
+
+    router
+        .route("/:username/messages")
+        //list messages of <username>
+        .get(async (req, res) => {
             try {
-                const { login, password, lastname, firstname } = req.body;
-                // Erreur sur la requête HTTP
-                if (!login || !password || !lastname || !firstname) {
-                    res.status(400).json({
-                        status: 400,
-                        "message": "Requête invalide : login, password, lastname et firstname nécessaires"
-                    });
-                    return;
-                }
-                if(await users.exists(login)) {
-                    res.status(401).json({
-                        status: 409,
-                        message: "Login existe déjà"
-                    });
-                    return;
-                }
-                let userid = await users.create(login, password, lastname, firstname);
-                if (userid) {
-                    // Avec middleware express-session
-                    req.session.regenerate(function (err) {
-                        if (err) {
-                            res.status(500).json({
-                                status: 500,
-                                message: "Erreur interne"
-                            });
-                        }
-                        else {
-                            // C'est bon, nouvelle session créée
-                            req.session.userid = userid;
-                            res.status(200).json({
-                                status: 200,
-                                message: "Utilisateur créé"
-                            });
-                        }
-                    });
-                    return;
-                }
-                // Faux login : destruction de la session et erreur
-                req.session.destroy((err) => { });
-                res.status(403).json({
-                    status: 403,
-                    message: "login et/ou le mot de passe invalide(s)"
-                });
-                return;
+                console.log("sqdqsdqsdqsdqsd")
+                const l_msg = await msg.getUserMsg(req.params.username);
+                if (!l_msg)
+                    res.sendStatus(404);
+                else{
+                    res.send(l_msg)                
+                } 
             }
             catch (e) {
-                // Toute autre erreur
-                res.status(500).json({
-                    status: 500,
-                    message: "erreur interne",
-                    details: (e || "Erreur inconnue").toString()
-                });
+                res.status(500).send(e);
             }
         })
 
