@@ -77,7 +77,7 @@ class Users {
           reject();
         }
         if(row == undefined) {
-          console.log('Erreur SQL: Mauvaise mot de passe');
+          console.log('Erreur SQL: Mauvais mot de passe');
           resolve(row);
         } else {
           resolve(row.rowid);

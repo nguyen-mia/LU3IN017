@@ -13,6 +13,7 @@ function init(db) {
     const msg = new Messages.default(db);
 
     router
+        // search message 
         .route("/search/:keyword")
         .get( async (req, res) => {
             try {

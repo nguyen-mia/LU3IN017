@@ -50,6 +50,37 @@ function init(db) {
                 });
             }
         })
+        //unfollow 
+        .delete(async (req, res) => {
+            try{
+                if(await users.exists(req.params.followee)) { //check followee exists
+                    let result = await follows.delete(req.session.username, req.params.followee);
+                    if (result == 'ok'){
+                        res.status(200).json({
+                            status: 200,
+                            message: "User unfollowed succesfully"
+                        });
+                    }else{
+                        res.status(500).json({
+                            status: 500,
+                            message: "Error, did not unfollow"
+                        });
+                    }
+                }else{
+                    res.status(404).json({
+                        status : 404,
+                        message : "User does not exist, cannot unfollow"
+                    })
+                }
+            }catch(e){
+                 // Toute autre erreur
+                 res.status(500).json({
+                    status: 500,
+                    message: "erreur interne",
+                    details: (e || "Erreur inconnue").toString()
+                });
+            }
+        })
     return router;
 }
 

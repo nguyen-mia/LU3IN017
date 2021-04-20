@@ -1,6 +1,7 @@
 const express = require("express");
 const Users = require("../entities/users.js");
 const Messages = require("../entities/messages.js");
+const Follows = require("../entities/follows.js")
 
 function init(userdb, msgdb) {
     const router = express.Router();
@@ -16,6 +17,7 @@ function init(userdb, msgdb) {
     });
     const users = new Users.default(userdb);
     const msg = new Messages.default(msgdb);
+    const follows = new Follows.default(userdb);
 
     router    
         .route("/")
@@ -142,10 +144,10 @@ function init(userdb, msgdb) {
             }catch(e){
                 // Toute autre erreur
                 res.status(500).json({
-                status: 500,
-                message: "erreur interne",
-                details: (e || "Erreur inconnue").toString()
-            });
+                    status: 500,
+                    message: "erreur interne",
+                    details: (e || "Erreur inconnue").toString()
+                });
             }
         })
 
@@ -154,7 +156,6 @@ function init(userdb, msgdb) {
         //list messages of <username>
         .get(async (req, res) => {
             try {
-                console.log("sqdqsdqsdqsdqsd")
                 const l_msg = await msg.getUserMsg(req.params.username);
                 if (!l_msg)
                     res.sendStatus(404);
@@ -166,7 +167,57 @@ function init(userdb, msgdb) {
                 res.status(500).send(e);
             }
         })
+    
+    router
+        .route("/:username/followings")
+        //list of people followed by <username>
+        .get(async (req, res) => {
+            try{
+                let result = await follows.getFollowing(req.params.username)
+                if (! result){
+                    res.status(-204).json({
+                        status: -204,
+                        message: "Erreur SQL"
+                    });
+                }else{
+                    res.send(result);
+                }
+            }catch(e) {
+                res.status(500).json({
+                    status: 500,
+                    message: "erreur interne",
+                    details: (e || "Erreur inconnue").toString()
+                });
+            }
+        })
+        
+    router
+        .route("/:username/followers")
+        .get(async (req, res) => {
+            try {
+                let result = await follows.getFollowers(req.params.username)
+                if (! result){
+                    res.status(-204).json({
+                        status: -204,
+                        message: "Erreur SQL"
+                    });
+                }else{
+                    res.send(result);
+                }
+            }catch(e){
+                res.status(500).json({
+                    status: 500,
+                    message: "erreur interne",
+                    details: (e || "Erreur inconnue").toString()
+                });
 
+            }
+        
+        })
+        
+        
+
+    
     return router;
 }
 
