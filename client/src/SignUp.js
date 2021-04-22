@@ -8,10 +8,12 @@ import axios from 'axios';
 //   }
 // }
 
-class Login extends React.Component {
+class SignUp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      lastname : "",
+      firstname : "",
       username : "",
       password : "",
       status : ""
@@ -26,14 +28,13 @@ class Login extends React.Component {
     this.setState({[name]:value});
   }
   
-  response_login(response) {
+  response_signup(response) {
     //console.log(response.data)
     if(response.data["status"] == 401) {
           const message = response.data["message"];
           this.setState({status:"error", texterror:message})
       } else {
-
-          this.props.setConnected(response.data["session_key"], response.data["username"],);
+        this.props.setConnected(response.data["session_key"]);
       }
   }
 
@@ -43,12 +44,14 @@ class Login extends React.Component {
     timeout : 1000,
     headers : {'X-Custom-Header' : 'foobar'}
     });
-    api.post('/login',{
+    api.post('/users/',{
               "username":this.state.username,
               "password":this.state.password,
+              "lastname":this.state.lastname,
+              "firstname":this.state.firstname
             })
     .then(response => {
-      this.response_login(response);
+      this.response_signup(response);
     });
   }
 
@@ -57,8 +60,26 @@ class Login extends React.Component {
     return (
       <nav>
           <div>
+            <span>
+                  <div>First Name</div>
+                  <input
+                      type="text"
+                      name="firstname"
+                      onChange={this.handleChange}
+                      value={this.state.firstname}
+                  />
+              </span>
               <span>
-                  <div>Login</div>
+                  <div>Last Name</div>
+                  <input
+                      type="text"
+                      name="lastname"
+                      onChange={this.handleChange}
+                      value={this.state.lastname}
+                  />
+              </span>
+              <span>
+                  <div>Username</div>
                   <input
                       type="text"
                       name="username"
@@ -85,7 +106,7 @@ class Login extends React.Component {
               <button
                 onClick = { (event => this.send()) }
               >
-              Log In
+              Sign Up
               </button>
           </div>
       </nav>
@@ -93,4 +114,4 @@ class Login extends React.Component {
   };
 }
 
-export default Login;
+export default SignUp;

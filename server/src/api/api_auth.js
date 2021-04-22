@@ -51,7 +51,8 @@ function init(db) {
                         res.status(200).json({
                             status: 200,
                             message: "Username et mot de passe accepté",
-                            session_key: req.session
+                            session_key: req.session.id,
+                            username : req.session.username
                         });
                     }
                 });

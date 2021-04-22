@@ -1,52 +1,69 @@
 import React from 'react';
-import './index.css';
-import NavigationPannel from './NavigationPannel';
+import NavigationPanel from './NavigationPanel';
+import MessagesPage from './MessagesPage';
+import SignUp from './SignUp';
+import Profile from './Profile'
 
-class MainPage extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = { 
-            page : "login_page", 
-            isConnected : false
+class MainPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentPage: 'login', // valeurs possibles: 'login', 'messages', 'signup',
+      isConnected: false,
+      sessionKey : '',
+      username : ''
+    }
+    this.setConnected = this.setConnected.bind(this)
+    this.handlePage = this.handlePage.bind(this)
+  }
+
+  setConnected = (sesKey, sesUser) => {
+    this.setState({
+      isConnected: true,
+      currentPage: 'messages',
+      sessionKey: sesKey,
+      username : sesUser
+    });
+  }
+
+  setLogout = (data) => {
+    this.setState({
+      isConnected: false,
+      currentPage: 'login',
+      sessionKey: data
+    });
+  }
+
+  handlePage = (pageName) => {
+    this.setState({ currentPage: pageName});
+  }
+
+  render() {
+    const { isConnected, currentPage, username } = this.state;
+
+    return <div>
+      <h1>Birdy !</h1>
+      <NavigationPanel
+        isConnected={isConnected}
+        setConnected={ this.setConnected }
+        setLogout={() => { this.setLogout() }}  
+        handlePage={ this.handlePage }
+        currentPage={currentPage}
+        username={username}
+      />
+      <main>
+        {!isConnected &&
+          <div>Welcome to birdy</div>
         }
-        this.getConnected = this.getConnected.bind(this);
-        this.setLogout = this.setLogout.bind(this);
-        this.setSignin = this.setSignin.bind(this);
-    }
-
-    render(){
-        return ( 
-            <div className = "MainPage">
-                {/* { this.state.isConnected ? 'Connected' : 'Please login' } */}
-                <NavigationPannel 
-                    login = {this.getConnected}
-                    logout = {this.setLogout}
-                    isConnected = {this.state.isConnected} 
-                    signin = {this.setSingin}>
-                </NavigationPannel>
-            </div> 
-        );
-    }
-
-    getConnected() { 
-        this.setState(
-            {page : "message_page",
-            isConnected : true}
-        )
-    }
-
-    setLogout(){
-        this.setState(
-            {page : "login",
-            isConnected : false}
-        )
-    }
-
-    setSignin(){
-        this.setState(
-            {page : "message_page",
-            isConnected : true}
-        )
-    }
+        {currentPage === 'messages' && isConnected
+          && <MessagesPage  username={username}/>}
+        {currentPage === 'profile' && isConnected
+          && <Profile  username={username}/>}
+        {currentPage === 'signup' && !isConnected
+          && <SignUp setConnected={ this.setConnected }/>}
+      </main>
+    </div>;
+  }
 }
-export default MainPage
+
+export default MainPage;

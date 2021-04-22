@@ -29,7 +29,9 @@ class Messages {
 
     get(){
         return new Promise ((resolve, reject ) => {
-            this.db.find ({}, (err, data) => {
+            this.db.find({})
+            .sort({date : -1})
+            .exec( (err, data) => {
                 if(err){
                     reject(err);
                 }else{

@@ -52,10 +52,12 @@ function init(userdb, msgdb) {
                         }
                         else {
                             // C'est bon, nouvelle session créée
-                            req.session.userid = userid;
+                            req.session.username = username;
+                        req.session.userid = userid;
                             res.status(200).json({
                                 status: 200,
-                                message: "Utilisateur créé"
+                                message: "Utilisateur créé",
+                                session_key: req.session.id
                             });
                         }
                     });
