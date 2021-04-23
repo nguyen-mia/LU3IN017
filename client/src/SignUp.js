@@ -30,11 +30,14 @@ class SignUp extends React.Component {
   
   response_signup(response) {
     //console.log(response.data)
-    if(response.data["status"] == 401) {
+    if(response.data["status"] === 401) {
           const message = response.data["message"];
           this.setState({status:"error", texterror:message})
       } else {
         this.props.setConnected(response.data["session_key"]);
+        this.setState({
+          username : response.data["username"]
+        })
       }
   }
 
@@ -99,7 +102,7 @@ class SignUp extends React.Component {
           </div>
           <div key={this.state.status}>
               {
-                (this.state.status == "error")
+                (this.state.status === "error")
                 ? <span style={{color:"red"}}>{this.state.texterror}</span>
                 : <span></span>
               }

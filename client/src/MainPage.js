@@ -11,10 +11,15 @@ class MainPage extends React.Component {
       currentPage: 'login', // valeurs possibles: 'login', 'messages', 'signup',
       isConnected: false,
       sessionKey : '',
-      username : ''
+      username : '',
+      profile :'',
+      search : false
     }
     this.setConnected = this.setConnected.bind(this)
+    this.setLogout = this.setLogout.bind(this)
     this.handlePage = this.handlePage.bind(this)
+    this.setProfile = this.setProfile.bind(this)
+    this.setMessages = this.setMessages.bind(this)
   }
 
   setConnected = (sesKey, sesUser) => {
@@ -22,7 +27,7 @@ class MainPage extends React.Component {
       isConnected: true,
       currentPage: 'messages',
       sessionKey: sesKey,
-      username : sesUser
+      username : sesUser,
     });
   }
 
@@ -34,31 +39,47 @@ class MainPage extends React.Component {
     });
   }
 
+  setProfile = (profile) => {
+    this.setState({
+      currentPage : 'profile',
+      profile : profile
+    })
+  }
+  
+  setMessages = (reload) =>{
+    this.setState({
+      currentPage : 'messages',
+      search : false,
+      reload : reload
+    })
+  }
   handlePage = (pageName) => {
     this.setState({ currentPage: pageName});
   }
 
   render() {
-    const { isConnected, currentPage, username } = this.state;
+    const { isConnected, currentPage, username, profile} = this.state;
 
     return <div>
       <h1>Birdy !</h1>
       <NavigationPanel
         isConnected={isConnected}
         setConnected={ this.setConnected }
-        setLogout={() => { this.setLogout() }}  
+        setLogout={this.setLogout}  
         handlePage={ this.handlePage }
+        setMessages={ this.setMessages}
         currentPage={currentPage}
         username={username}
+        setProfile={this.setProfile}
       />
       <main>
         {!isConnected &&
           <div>Welcome to birdy</div>
         }
         {currentPage === 'messages' && isConnected
-          && <MessagesPage  username={username}/>}
+          && <MessagesPage  username={username} setProfile={this.setProfile} setMessages={ this.setMessages}/>}
         {currentPage === 'profile' && isConnected
-          && <Profile  username={username}/>}
+          && <Profile  profile={profile}/>}
         {currentPage === 'signup' && !isConnected
           && <SignUp setConnected={ this.setConnected }/>}
       </main>

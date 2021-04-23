@@ -1,29 +1,30 @@
 import React from 'react'
 import axios from 'axios';
 
-class MessageForm extends React.Component {
+class SearchBar extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-      message : "",
-      status : ""
+      keyword : "",
+      status : "",
+      message : []
     };
 		this.handleChange = this.handleChange.bind(this);
 	}
 	
-	createMessage(){
+	search(){
 		const api = axios.create({
 			baseURL : '/api/',
 			timeout : 1000,
 			headers : {'X-Custom-Header' : 'foobar'}
 			});
-		api.post('/messages', { 
-				"username":this.props.username,
-				"message":this.state.message,
-		})
+		api.get(`messages/search/${this.state.keyword}`, {})
 		.then(response => {
-			this.props.fetch();
-			this.setState({message : ""})
+			this.setState({
+                keyword : "",
+                messages : response.data
+            })
+            this.props.handleSearchMessage(response.data)
 		});
 	}
 
@@ -37,20 +38,20 @@ class MessageForm extends React.Component {
 	render(){
 		return (
 			<div>
-				<div>Message</div>
+				<div>Search</div>
 				<input
 					type="text"
-					placeholder="Type anything.."
-					name="message"
+					placeholder="Search anything.."
+					name="keyword"
 					onChange={this.handleChange}
-					value={this.state.message}
+					value={this.state.keyword}
 				/>
-				<button onClick = { (event => this.createMessage()) } >
-          Post
-        </button>
+				<button onClick = { (event => this.search()) } >
+                Search!
+                </button>
 			</div>
 				
 		)
 	}
 }
-export default MessageForm;
+export default SearchBar;

@@ -16,14 +16,14 @@ class Profile extends React.Component{
       following : [],
       isFollowed : false
     }
-    this.fetchMessage = this.fetchMessage.bind(this)  
+    this.fetchMessage = this.fetchMessage.bind(this)
   }
 
   componentDidMount(){
     this.fetchMessage()
     this.fetchUser()
     try{
-      this.intervalId = setInterval(this.fetchMessage, 10000);
+      this.intervalId = setInterval(this.fetchMessage, 5000);
     }catch(e){
       console.log(e)
     }
@@ -36,7 +36,7 @@ class Profile extends React.Component{
   ///////////////////////////////////////////////////////////////////MESSAGES///////////////////////////////////////////////////////////////////
   response_messages(response) {
     //console.log(response.data)
-    if(response.data["status"] == 401) {
+    if(response.data["status"] === 401) {
           const message = response.data["message"];
           this.setState({status:"error", texterror:message})
     } else {
@@ -50,19 +50,18 @@ class Profile extends React.Component{
       timeout : 1000,
       headers : {'X-Custom-Header' : 'foobar'}
       });
-    await api.get(`/users/${this.props.username}/messages`,{})
+    await api.get(`/users/${this.props.profile}/messages`,{})
     .then(response => { 
       this.response_messages(response);
     });
   }
-  
   
     ///////////////////////////////////////////////////////////////////USERS///////////////////////////////////////////////////////////////////
 
 
   response_user(response) {
     //console.log(response.data)
-    if(response.data["status"] == 401) {
+    if(response.data["status"] === 401) {
           const message = response.data["message"];
           this.setState({status:"error", texterror:message})
     } else {
@@ -82,7 +81,7 @@ class Profile extends React.Component{
       timeout : 1000,
       headers : {'X-Custom-Header' : 'foobar'}
       });
-    api.get(`/users/${this.props.username}`,{})
+    api.get(`/users/${this.props.profile}`,{})
     .then(response => { 
       this.response_user(response);
     });
@@ -92,7 +91,7 @@ class Profile extends React.Component{
 
   response_follow(response) {
     //console.log(response.data)
-    if(response.data["status"] == 401) {
+    if(response.data["status"] === 401) {
           const message = response.data["message"];
           this.setState({status:"error", texterror:message})
     } else {
@@ -108,7 +107,7 @@ class Profile extends React.Component{
     timeout : 1000,
     headers : {'X-Custom-Header' : 'foobar'}
     });
-    api.post(`/follows/${this.props.username}`,{})
+    api.post(`/follows/${this.props.profile}`,{})
     .then(response => {
       this.response_follow(response);
     });
@@ -116,7 +115,7 @@ class Profile extends React.Component{
 
   response_unfollow(response) {
     //console.log(response.data)
-    if(response.data["status"] == 401) {
+    if(response.data["status"] === 401) {
           const message = response.data["message"];
           this.setState({status:"error", texterror:message})
     } else {
@@ -132,7 +131,7 @@ class Profile extends React.Component{
     timeout : 1000,
     headers : {'X-Custom-Header' : 'foobar'}
     });
-    api.delete(`/follows/${this.props.username}`,{})
+    api.delete(`/follows/${this.props.profile}`,{})
     .then(response => {
       this.response_follow(response);
     });
@@ -146,7 +145,7 @@ class Profile extends React.Component{
       <div className = "MessagesPage"> 
         <div key={this.state.status}>
           {
-            (this.state.status == "error")
+            (this.state.status === "error")
             ? <span style={{color:"red"}}>{this.state.texterror}</span>
             : <span></span>
           }

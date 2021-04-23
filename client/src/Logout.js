@@ -12,7 +12,7 @@ class Logout extends React.Component{
 
     response_logout(response) {
         //console.log(response.data)
-        if(response.data["status"] == 401) {
+        if(response.data["status"] === 401) {
               const message = response.data["message"];
               this.setState({status:"error", texterror:message})
           } else {
@@ -38,7 +38,7 @@ class Logout extends React.Component{
             <div className = "Logout"> 
                 <div key={this.state.status}>
               {
-                (this.state.status == "error")
+                (this.state.status === "error")
                 ? <span style={{color:"red"}}>{this.state.texterror}</span>
                 : <span></span>
               }

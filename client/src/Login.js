@@ -28,7 +28,7 @@ class Login extends React.Component {
   
   response_login(response) {
     //console.log(response.data)
-    if(response.data["status"] == 401) {
+    if(response.data["status"] === 401) {
           const message = response.data["message"];
           this.setState({status:"error", texterror:message})
       } else {
@@ -78,7 +78,7 @@ class Login extends React.Component {
           </div>
           <div key={this.state.status}>
               {
-                (this.state.status == "error")
+                (this.state.status === "error")
                 ? <span style={{color:"red"}}>{this.state.texterror}</span>
                 : <span></span>
               }

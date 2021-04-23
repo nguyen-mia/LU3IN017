@@ -1,10 +1,6 @@
 import React from 'react'
 
 class UserList extends React.Component {
-    constructor(props){
-      super(props)
-    }
-
     render(){
         const {userList,type} = this.props;
         let following = userList.map((user)=>{
@@ -15,7 +11,7 @@ class UserList extends React.Component {
         })
         return (
             <div>
-                {type == 'following'
+                {type === 'following'
                 ?<div>FOLLOWING 
                     <ul className = 'UserList'>
                         {following}

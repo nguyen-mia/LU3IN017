@@ -57,7 +57,8 @@ function init(userdb, msgdb) {
                             res.status(200).json({
                                 status: 200,
                                 message: "Utilisateur créé",
-                                session_key: req.session.id
+                                session_key: req.session.id,
+                                username : req.session.username
                             });
                         }
                     });

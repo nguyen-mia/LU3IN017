@@ -3,23 +3,20 @@ import Login from './Login'
 import Logout from './Logout'
 
 class NavigationPanel extends React.Component {
-  constructor(props){
-    super(props)
-  }
 
   render() {
-    const { currentPage, setConnected, setLogout, handlePage, isConnected, username } = this.props;
+    const { currentPage, setConnected, setLogout, handlePage, isConnected, username, setMessages, setProfile} = this.props;
     
     return <nav id="navPanel">
-      <button onClick={() => { handlePage('messages'); }}>Home</button>
+      <button onClick={() => { setMessages();  }}>Home</button>
       {isConnected
         ? <div>
-            <button onClick={() => { handlePage('profile'); }}> {username} </button>
-            <Logout setLogout={this.props.setLogout} />
+            <button onClick={() => { setProfile(username); }}> {username} </button>
+            <Logout setLogout={setLogout} />
           </div>
         : <div>
-            <Login setConnected={this.props.setConnected } /> 
-            {currentPage != 'signup' && 
+            <Login setConnected={setConnected } /> 
+            {currentPage !== 'signup' && 
               <button onClick={() => { handlePage('signup'); }}>S'inscrire</button>
             }
 
