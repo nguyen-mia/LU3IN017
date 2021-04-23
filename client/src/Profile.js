@@ -2,12 +2,13 @@ import React from 'react';
 import axios from 'axios';
 import UserList from './UserList';
 import MessageList from './MessageList';
-
+import { withRouter } from "react-router-dom";
 
 class Profile extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      username : props.match.params.username,
       messages : [],
       intervalID : null,
       lastname: "",
@@ -45,12 +46,13 @@ class Profile extends React.Component{
   }
 
   async fetchMessage(){
+    
     const api = axios.create({
       baseURL : '/api/',
       timeout : 1000,
       headers : {'X-Custom-Header' : 'foobar'}
       });
-    await api.get(`/users/${this.props.profile}/messages`,{})
+    await api.get(`/users/${this.state.username}/messages`,{})
     .then(response => { 
       this.response_messages(response);
     });
@@ -81,7 +83,7 @@ class Profile extends React.Component{
       timeout : 1000,
       headers : {'X-Custom-Header' : 'foobar'}
       });
-    api.get(`/users/${this.props.profile}`,{})
+    api.get(`/users/${this.state.username}`,{})
     .then(response => { 
       this.response_user(response);
     });
@@ -107,7 +109,7 @@ class Profile extends React.Component{
     timeout : 1000,
     headers : {'X-Custom-Header' : 'foobar'}
     });
-    api.post(`/follows/${this.props.profile}`,{})
+    api.post(`/follows/${this.state.username}`,{})
     .then(response => {
       this.response_follow(response);
     });
@@ -131,7 +133,7 @@ class Profile extends React.Component{
     timeout : 1000,
     headers : {'X-Custom-Header' : 'foobar'}
     });
-    api.delete(`/follows/${this.props.profile}`,{})
+    api.delete(`/follows/${this.state.username}`,{})
     .then(response => {
       this.response_follow(response);
     });
@@ -141,6 +143,7 @@ class Profile extends React.Component{
 
 
   render(){
+    
     return(
       <div className = "MessagesPage"> 
         <div key={this.state.status}>
@@ -163,4 +166,4 @@ class Profile extends React.Component{
   }
 }
 
-export default Profile
+export default withRouter(Profile)

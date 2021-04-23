@@ -1,23 +1,24 @@
 import React from 'react'
 import Login from './Login'
 import Logout from './Logout'
+import {Link, withRouter} from "react-router-dom";
 
 class NavigationPanel extends React.Component {
 
   render() {
-    const { currentPage, setConnected, setLogout, handlePage, isConnected, username, setMessages, setProfile} = this.props;
+    const { setConnected, setLogout, isConnected, username} = this.props;
     
     return <nav id="navPanel">
-      <button onClick={() => { setMessages();  }}>Home</button>
+      <Link to="/">Home</Link>
       {isConnected
         ? <div>
-            <button onClick={() => { setProfile(username); }}> {username} </button>
+            <Link to={`/user/${username}`}>{username} </Link>
             <Logout setLogout={setLogout} />
           </div>
         : <div>
             <Login setConnected={setConnected } /> 
-            {currentPage !== 'signup' && 
-              <button onClick={() => { handlePage('signup'); }}>S'inscrire</button>
+            {this.props.location.pathname !== '/signup' && 
+              <Link to="/signup">S'inscrire</Link>
             }
 
             
@@ -29,4 +30,4 @@ class NavigationPanel extends React.Component {
   }
 }
 
-export default NavigationPanel;
+export default withRouter(NavigationPanel);

@@ -1,12 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-
-// const serveur_config = {
-//   headers: {
-//     'Access-Control-Allow-Origin': "*",
-//     'Content-Type': 'application/json:charset=UTF-8',
-//   }
-// }
+import {withRouter} from "react-router-dom";
 
 class Login extends React.Component {
   constructor(props) {
@@ -29,12 +23,12 @@ class Login extends React.Component {
   response_login(response) {
     //console.log(response.data)
     if(response.data["status"] === 401) {
-          const message = response.data["message"];
-          this.setState({status:"error", texterror:message})
-      } else {
-
-          this.props.setConnected(response.data["session_key"], response.data["username"],);
-      }
+      const message = response.data["message"];
+      this.setState({status:"error", texterror:message})
+    } else {
+      this.props.setConnected(response.data["session_key"], response.data["username"]);
+      this.props.history.push('/')
+    }
   }
 
   send() {
@@ -93,4 +87,4 @@ class Login extends React.Component {
   };
 }
 
-export default Login;
+export default withRouter(Login);

@@ -1,33 +1,15 @@
 import React from 'react'
-import axios from 'axios';
+import { withRouter, Link} from "react-router-dom";
 
 class SearchBar extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
-      keyword : "",
-      status : "",
-      message : []
+      keyword : ""
     };
 		this.handleChange = this.handleChange.bind(this);
 	}
 	
-	search(){
-		const api = axios.create({
-			baseURL : '/api/',
-			timeout : 1000,
-			headers : {'X-Custom-Header' : 'foobar'}
-			});
-		api.get(`messages/search/${this.state.keyword}`, {})
-		.then(response => {
-			this.setState({
-                keyword : "",
-                messages : response.data
-            })
-            this.props.handleSearchMessage(response.data)
-		});
-	}
-
 	handleChange(event = {}) {
 		const name = event.target && event.target.name;
 		const value = event.target && event.target.value;
@@ -46,12 +28,14 @@ class SearchBar extends React.Component {
 					onChange={this.handleChange}
 					value={this.state.keyword}
 				/>
-				<button onClick = { (event => this.search()) } >
-                Search!
-                </button>
+				{this.props.match.params.keyword ?
+					<Link to={`/search/${this.state.keyword}`} onClick = { (event => this.props.handleSearch(this.state.keyword))} > Search2</Link>
+					:
+					<Link to={`/search/${this.state.keyword}`}> Search ! </Link>
+				}
 			</div>
 				
 		)
 	}
 }
-export default SearchBar;
+export default withRouter(SearchBar);
