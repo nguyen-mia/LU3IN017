@@ -43,12 +43,14 @@ class Messages {
 
     getUserMsg(username){
         return new Promise ((resolve, reject ) => {
-            this.db.find ({author_username : username}, (err, data) => {
-                if(err){
-                    reject(err);
-                }else{
-                    resolve(data);
-                }
+            this.db.find ({author_username : username})
+                .sort({date : -1})
+                .exec( (err, data) => {
+                    if(err){
+                        reject(err);
+                    }else{
+                        resolve(data);
+                    }
             })
         })
     }

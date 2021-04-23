@@ -11,10 +11,11 @@ class NavigationPanel extends React.Component {
     const { currentPage, setConnected, setLogout, handlePage, isConnected, username } = this.props;
     
     return <nav id="navPanel">
+      <button onClick={() => { handlePage('messages'); }}>Home</button>
       {isConnected
         ? <div>
-            <Logout setLogout={this.props.setLogout} />
             <button onClick={() => { handlePage('profile'); }}> {username} </button>
+            <Logout setLogout={this.props.setLogout} />
           </div>
         : <div>
             <Login setConnected={this.props.setConnected } /> 

@@ -53,7 +53,7 @@ function init(userdb, msgdb) {
                         else {
                             // C'est bon, nouvelle session créée
                             req.session.username = username;
-                        req.session.userid = userid;
+                            req.session.userid = userid;
                             res.status(200).json({
                                 status: 200,
                                 message: "Utilisateur créé",
@@ -82,14 +82,25 @@ function init(userdb, msgdb) {
         })
     router
         .route("/:username")
-        //get user
+        //get user, return username, lastname, firstname, and lists Following & Follower
         .get(async (req, res) => {
             try {
                 const user = await users.get(req.params.username);
-                if (!user)
+                const followers = await follows.getFollowers(req.params.username)
+                const following = await follows.getFollowing(req.params.username)
+                const isFollowed = await follows.isFollowed(req.session.username, req.params.username)
+                if (!followers || !user || !following)
                     res.sendStatus(404);
                 else{
-                    res.send(user)                
+                    res.status(200).json({
+                        status: 200,
+                        username : user.username,
+                        lastname : user.lastname,
+                        firstname : user.firstname,
+                        followers : followers,
+                        following : following,
+                        isFollowed : isFollowed
+                    });              
                 } 
             }
             catch (e) {
@@ -170,52 +181,52 @@ function init(userdb, msgdb) {
             }
         })
     
-    router
-        .route("/:username/followings")
-        //list of people followed by <username>
-        .get(async (req, res) => {
-            try{
-                let result = await follows.getFollowing(req.params.username)
-                if (! result){
-                    res.status(-204).json({
-                        status: -204,
-                        message: "Erreur SQL"
-                    });
-                }else{
-                    res.send(result);
-                }
-            }catch(e) {
-                res.status(500).json({
-                    status: 500,
-                    message: "erreur interne",
-                    details: (e || "Erreur inconnue").toString()
-                });
-            }
-        })
+    // router
+    //     .route("/:username/followings")
+    //     //list of people followed by <username>
+    //     .get(async (req, res) => {
+    //         try{
+    //             let result = await follows.getFollowing(req.params.username)
+    //             if (! result){
+    //                 res.status(-204).json({
+    //                     status: -204,
+    //                     message: "Erreur SQL"
+    //                 });
+    //             }else{
+    //                 res.send(result);
+    //             }
+    //         }catch(e) {
+    //             res.status(500).json({
+    //                 status: 500,
+    //                 message: "erreur interne",
+    //                 details: (e || "Erreur inconnue").toString()
+    //             });
+    //         }
+    //     })
         
-    router
-        .route("/:username/followers")
-        .get(async (req, res) => {
-            try {
-                let result = await follows.getFollowers(req.params.username)
-                if (! result){
-                    res.status(-204).json({
-                        status: -204,
-                        message: "Erreur SQL"
-                    });
-                }else{
-                    res.send(result);
-                }
-            }catch(e){
-                res.status(500).json({
-                    status: 500,
-                    message: "erreur interne",
-                    details: (e || "Erreur inconnue").toString()
-                });
+    // router
+    //     .route("/:username/followers")
+    //     .get(async (req, res) => {
+    //         try {
+    //             let result = await follows.getFollowers(req.params.username)
+    //             if (! result){
+    //                 res.status(-204).json({
+    //                     status: -204,
+    //                     message: "Erreur SQL"
+    //                 });
+    //             }else{
+    //                 res.send(result);
+    //             }
+    //         }catch(e){
+    //             res.status(500).json({
+    //                 status: 500,
+    //                 message: "erreur interne",
+    //                 details: (e || "Erreur inconnue").toString()
+    //             });
 
-            }
+    //         }
         
-        })
+    //     })
         
         
 

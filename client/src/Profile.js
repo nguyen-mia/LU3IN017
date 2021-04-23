@@ -1,69 +1,166 @@
 import React from 'react';
 import axios from 'axios';
+import UserList from './UserList';
 import MessageList from './MessageList';
+
 
 class Profile extends React.Component{
   constructor(props){
     super(props);
     this.state = {
       messages : [],
-      intervalID : null
+      intervalID : null,
+      lastname: "",
+      firstname: "",
+      followers : [],
+      following : [],
+      isFollowed : false
     }
-    this.fetch = this.fetch.bind(this)  
+    this.fetchMessage = this.fetchMessage.bind(this)  
   }
 
-  response_messages(response) {
-      //console.log(response.data)
-      if(response.data["status"] == 401) {
-            const message = response.data["message"];
-            this.setState({status:"error", texterror:message})
-        } else {
-          // var joined = this.state.messages.concat(response.data);
-          // console.log(joined)
-          this.setState({ messages: response.data })
-          // console.log(this.state.messages)
-        }
-    }
-
   componentDidMount(){
-    this.fetch()
+    this.fetchMessage()
+    this.fetchUser()
     try{
-      this.intervalId = setInterval(this.fetch, 10000);
+      this.intervalId = setInterval(this.fetchMessage, 10000);
     }catch(e){
       console.log(e)
     }
   }
+  
+  componentWillUnmount(){
+    clearInterval(this.intervalId) 
+  }
+  
+  ///////////////////////////////////////////////////////////////////MESSAGES///////////////////////////////////////////////////////////////////
+  response_messages(response) {
+    //console.log(response.data)
+    if(response.data["status"] == 401) {
+          const message = response.data["message"];
+          this.setState({status:"error", texterror:message})
+    } else {
+      this.setState({ messages: response.data })
+    }
+  }
 
-  async fetch(){
+  async fetchMessage(){
     const api = axios.create({
       baseURL : '/api/',
       timeout : 1000,
       headers : {'X-Custom-Header' : 'foobar'}
       });
-    await api.get(`/users/{username}/messages`,{})
+    await api.get(`/users/${this.props.username}/messages`,{})
     .then(response => { 
       this.response_messages(response);
     });
   }
+  
+  
+    ///////////////////////////////////////////////////////////////////USERS///////////////////////////////////////////////////////////////////
 
-  componentWillUnmount(){
-    clearInterval(this.intervalId) 
+
+  response_user(response) {
+    //console.log(response.data)
+    if(response.data["status"] == 401) {
+          const message = response.data["message"];
+          this.setState({status:"error", texterror:message})
+    } else {
+      this.setState({ 
+        lastname: response.data["lastname"],
+        firstname: response.data["firstname"],
+        followers: response.data["followers"],
+        following: response.data["following"],
+        isFollowed: response.data["isFollowed"]  
+      })
+    }
   }
+
+  fetchUser(){
+    const api = axios.create({
+      baseURL : '/api/',
+      timeout : 1000,
+      headers : {'X-Custom-Header' : 'foobar'}
+      });
+    api.get(`/users/${this.props.username}`,{})
+    .then(response => { 
+      this.response_user(response);
+    });
+  }
+
+  ///////////////////////////////////////////////////////////////////FOLLOW/UNFOLLOW//////////////////////////////////////////////////////////////////
+
+  response_follow(response) {
+    //console.log(response.data)
+    if(response.data["status"] == 401) {
+          const message = response.data["message"];
+          this.setState({status:"error", texterror:message})
+    } else {
+      this.setState({ 
+        isFollowed: true
+      })
+    }
+  }
+
+  follow() {
+    const api = axios.create({
+    baseURL : '/api/',
+    timeout : 1000,
+    headers : {'X-Custom-Header' : 'foobar'}
+    });
+    api.post(`/follows/${this.props.username}`,{})
+    .then(response => {
+      this.response_follow(response);
+    });
+  }
+
+  response_unfollow(response) {
+    //console.log(response.data)
+    if(response.data["status"] == 401) {
+          const message = response.data["message"];
+          this.setState({status:"error", texterror:message})
+    } else {
+      this.setState({ 
+        isFollowed: false
+      })
+    }
+  }
+
+  unfollow() {
+    const api = axios.create({
+    baseURL : '/api/',
+    timeout : 1000,
+    headers : {'X-Custom-Header' : 'foobar'}
+    });
+    api.delete(`/follows/${this.props.username}`,{})
+    .then(response => {
+      this.response_follow(response);
+    });
+  }
+
+    ///////////////////////////////////////////////////////////////////RENDER//////////////////////////////////////////////////////////////////
 
 
   render(){
-      return(
-          <div className = "MessagesPage"> 
-              <div key={this.state.status}>
-                {
-                  (this.state.status == "error")
-                  ? <span style={{color:"red"}}>{this.state.texterror}</span>
-                  : <span></span>
-                }
-              </div>
-              <MessageList messages = {this.state.messages}/>
-          </div> 
-      );
+    return(
+      <div className = "MessagesPage"> 
+        <div key={this.state.status}>
+          {
+            (this.state.status == "error")
+            ? <span style={{color:"red"}}>{this.state.texterror}</span>
+            : <span></span>
+          }
+        </div>
+        <div>
+          {this.state.isFollowed
+          ? <button onClick={() => { this.unfollow() ; this.fetchUser()}}> Unfollow </button>
+          : <button onClick={() => { this.follow() ; this.fetchUser()}}> Follow </button>}
+        </div>
+        <UserList userList = {this.state.followers} type ="followers"> FOLLOWERS </UserList>
+        <UserList userList = {this.state.following} type ="following"> FOLLOWING </UserList>
+        <MessageList messages = {this.state.messages}/>
+      </div> 
+    );
   }
 }
 

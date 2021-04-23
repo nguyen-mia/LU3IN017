@@ -85,6 +85,23 @@ class Follows {
       })
     }
 
+    isFollowed(follower_id, followee_id){
+      return new Promise ((resolve, reject) => {
+        const req = this.db.prepare(`
+          SELECT * from follows 
+          WHERE follower_id=? AND followee_id=?
+        `);
+        req.all([follower_id, followee_id], (err, row) =>{
+          if (err){
+            console.log(err)
+            reject()
+          }else{
+            resolve(row.length > 0)
+          }
+        })
+      })
+    }
+
 }
 
 exports.default = Follows;
