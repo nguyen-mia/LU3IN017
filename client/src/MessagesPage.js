@@ -2,7 +2,6 @@ import React from 'react';
 import axios from 'axios';
 import MessageList from './MessageList';
 import MessageForm from './MessageForm';
-import SearchBar from './SearchBar';
 import { withRouter, Link} from "react-router-dom";
 
 
@@ -10,6 +9,7 @@ class MessagesPage extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      currentUser : this.props.currentUser,
       messages : [],
       intervalID : null,
       status: "",
@@ -68,7 +68,7 @@ class MessagesPage extends React.Component{
                 }
               </div>
               <MessageForm fetch = {this.fetch} currentUser = {this.props.currentUser}/> 
-              <MessageList messages = {this.state.messages} setProfile = {this.props.setProfile}/>
+              <MessageList messages = {this.state.messages} fetch = {this.fetch} currentUser = {this.props.currentUser}/>
           </div> 
       );
   }

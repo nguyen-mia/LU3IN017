@@ -8,6 +8,7 @@ class Profile extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      currentUser : this.props.currentUser,
       username : props.match.params.username,
       messages : [],
       intervalID : null,
@@ -18,6 +19,7 @@ class Profile extends React.Component{
       isFollowed : false
     }
     this.fetchUser = this.fetchUser.bind(this)
+    this.fetchMessage = this.fetchMessage.bind(this)
     this.fetch = this.fetch.bind(this)
     this.follow = this.follow.bind(this)
     this.unfollow = this.unfollow.bind(this)
@@ -180,7 +182,7 @@ class Profile extends React.Component{
         </div>
         <UserList userList = {this.state.followers} type ="followers" > FOLLOWERS </UserList>
         <UserList userList = {this.state.following} type ="following" unfollow = {this.unfollow} fetchUser = {this.fetchUser} currentUser={this.props.currentUser}> FOLLOWING </UserList>
-        <MessageList messages = {this.state.messages}/>
+        <MessageList messages = {this.state.messages} fetch = {this.fetchMessage} currentUser={this.props.currentUser}/>
       </div> 
     );
   }
