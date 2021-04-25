@@ -20,7 +20,6 @@ class SearchBar extends React.Component {
 	render(){
 		return (
 			<div>
-				<div>Search</div>
 				<input
 					type="text"
 					placeholder="Search anything.."
@@ -28,11 +27,7 @@ class SearchBar extends React.Component {
 					onChange={this.handleChange}
 					value={this.state.keyword}
 				/>
-				{this.props.match.params.keyword ?
-					<Link to={`/search/${this.state.keyword}`} onClick = { (event => this.props.handleSearch(this.state.keyword))} > Search2</Link>
-					:
-					<Link to={`/search/${this.state.keyword}`}> Search ! </Link>
-				}
+				<Link to={`/search/${this.state.keyword}`}> Search</Link>
 			</div>
 				
 		)

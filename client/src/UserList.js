@@ -2,9 +2,14 @@ import React from 'react'
 
 class UserList extends React.Component {
     render(){
-        const {userList,type} = this.props;
+        const {userList, type} = this.props;
         let following = userList.map((user)=>{
-            return <li key={user.follower_id}> {user.followee_id} </li>
+            return <li key={user.follower_id}> 
+                {user.followee_id} 
+                {this.props.currentUser === user.follower_id? 
+                    <button onClick={() => { this.props.unfollow(user.followee_id) ; this.props.fetchUser()}}> Unfollow </button> 
+                    : <div/>}
+            </li>
         })
         let followers = userList.map((user)=>{
             return <li key={user.followee_id}> {user.follower_id} </li>

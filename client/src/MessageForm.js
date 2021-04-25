@@ -18,7 +18,7 @@ class MessageForm extends React.Component {
 			headers : {'X-Custom-Header' : 'foobar'}
 			});
 		api.post('/messages', { 
-				"username":this.props.username,
+				"username":this.props.currentUser,
 				"message":this.state.message,
 		})
 		.then(response => {
@@ -37,7 +37,6 @@ class MessageForm extends React.Component {
 	render(){
 		return (
 			<div>
-				<div>Message</div>
 				<input
 					type="text"
 					placeholder="Type anything.."

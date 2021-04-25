@@ -13,10 +13,8 @@ class MessagesPage extends React.Component{
       messages : [],
       intervalID : null,
       status: "",
-      keyword: props.match.params.keyword
     }
     this.fetch = this.fetch.bind(this)  
-    this.handleSearch = this.handleSearch.bind(this)  
   }
 
   response_messages(response) {
@@ -52,31 +50,12 @@ class MessagesPage extends React.Component{
       timeout : 1000,
       headers : {'X-Custom-Header' : 'foobar'}
     });
-    console.log(this.state)
-    if (!this.state.keyword){ //no keyword, normal timeline
-      await api.get('/messages',{})
-      .then(response => {
-        this.response_messages(response);
-      });
-
-    } else {
-      api.get(`messages/search/${this.state.keyword}`, {})
-      .then(response => {
-        this.setState({
-          keyword : ""
-        })
-        this.response_messages(response)
-      });
-    }
+    //console.log(this.state)
+    await api.get('/messages',{})
+    .then(response => {
+      this.response_messages(response);
+    });
   }
-
-  handleSearch(data){
-    this.setState({
-      keyword: data
-    })
-    this.fetch()
-  }
-
 
   render(){
       return(
@@ -88,8 +67,7 @@ class MessagesPage extends React.Component{
                   : <span></span>
                 }
               </div>
-              <SearchBar handleSearch={this.handleSearch}/> 
-              <MessageForm fetch = {this.fetch} username = {this.props.username}/> 
+              <MessageForm fetch = {this.fetch} currentUser = {this.props.currentUser}/> 
               <MessageList messages = {this.state.messages} setProfile = {this.props.setProfile}/>
           </div> 
       );

@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import NavigationPanel from './NavigationPanel';
 import MessagesPage from './MessagesPage';
+import SearchPage from './SearchPage';
 import SignUp from './SignUp';
 import Profile from './Profile'
 
@@ -16,7 +17,7 @@ class MainPage extends React.Component {
     this.state = {
       isConnected: false,
       sessionKey : '',
-      username : '',
+      currentUser : '',
     }
     this.setConnected = this.setConnected.bind(this)
     this.setLogout = this.setLogout.bind(this)
@@ -26,7 +27,7 @@ class MainPage extends React.Component {
     this.setState({
       isConnected: true,
       sessionKey: sesKey,
-      username : sesUser,
+      currentUser : sesUser,
     });
   }
 
@@ -39,7 +40,7 @@ class MainPage extends React.Component {
 
 
   render() {
-    const { isConnected, username} = this.state;
+    const { isConnected, currentUser} = this.state;
 
     return (
       <Router>
@@ -48,24 +49,24 @@ class MainPage extends React.Component {
             isConnected={isConnected}
             setConnected={ this.setConnected }
             setLogout={this.setLogout}  
-            username={username}
+            currentUser={currentUser}
           />
              
           {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
           <Switch>
             <Route path="/user/:username">
-              { isConnected && <Profile />}
+              { isConnected && <Profile currentUser={currentUser}/>}
             </Route>
             <Route path="/signup">
               <SignUp setConnected={ this.setConnected }/>
             </Route>
             <Route path="/search/:keyword">
-              <MessagesPage key="1" username={username} />
+              <SearchPage currentUser={currentUser} />
             </Route>
             <Route path="/">
               { isConnected && 
-                <MessagesPage key="2" username={username} />
+                <MessagesPage currentUser={currentUser} />
               }
             </Route>
           </Switch>

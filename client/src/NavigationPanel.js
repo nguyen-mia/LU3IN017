@@ -1,19 +1,21 @@
 import React from 'react'
 import Login from './Login'
 import Logout from './Logout'
+import SearchBar from './SearchBar'
 import {Link, withRouter} from "react-router-dom";
 
 class NavigationPanel extends React.Component {
 
   render() {
-    const { setConnected, setLogout, isConnected, username} = this.props;
+    const { setConnected, setLogout, isConnected, currentUser} = this.props;
     
     return <nav id="navPanel">
       <Link to="/">Home</Link>
       {isConnected
         ? <div>
-            <Link to={`/user/${username}`}>{username} </Link>
+            <Link to={`/user/${currentUser}`}>{currentUser} </Link>
             <Logout setLogout={setLogout} />
+            <SearchBar />
           </div>
         : <div>
             <Login setConnected={setConnected } /> 
