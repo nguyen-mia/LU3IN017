@@ -34,15 +34,8 @@ class SearchPage extends React.Component{
     this.fetch()
   }
 
-  // componentWillUpdate(nextProps, nextState) {
-  //   if (nextProps.match.params.keyword !== this.props.match.params.keyword) {
-  //     nextState.keyword = nextProps.match.params.keyword;
-  //     this.fetch()
-  //   }
-  // }
 
   componentDidUpdate(prevProps, prevState) {
-    // only update chart if the data has changed
     if (prevProps.match.params.keyword !== this.props.match.params.keyword) {
       this.fetch()
     }

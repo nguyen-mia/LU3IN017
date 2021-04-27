@@ -1,5 +1,4 @@
 import React from 'react'
-import Login from './Login'
 import Logout from './Logout'
 import SearchBar from './SearchBar'
 import {Link, withRouter} from "react-router-dom";
@@ -7,7 +6,7 @@ import {Link, withRouter} from "react-router-dom";
 class NavigationPanel extends React.Component {
 
   render() {
-    const { setConnected, setLogout, isConnected, currentUser} = this.props;
+    const { setLogout, isConnected, currentUser} = this.props;
     
     return <nav id="navPanel">
       <Link to="/">Home</Link>
@@ -18,12 +17,9 @@ class NavigationPanel extends React.Component {
             <SearchBar currentUser={currentUser}/>
           </div>
         : <div>
-            <Login setConnected={setConnected } /> 
             {this.props.location.pathname !== '/signup' && 
               <Link to="/signup">S'inscrire</Link>
-            }
-
-            
+            } 
           </div>
       }
       {}

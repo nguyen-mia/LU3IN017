@@ -7,7 +7,13 @@ class UserList extends React.Component {
             return <li key={user.followee_id}> 
                 {user.followee_id}
                 {this.props.currentUser === user.follower_id 
-                && <button onClick={() => { this.props.unfollow(user.followee_id) ; this.props.fetchUser()}}> Unfollow </button> }
+                && <button onClick={() => { 
+                    this.props.unfollow(user.followee_id) ; 
+                    this.props.fetchUser()
+                    }
+                }>
+                    Unfollow 
+                </button> }
             </li>
         })
         let followers = userList.map((user)=>{

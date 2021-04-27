@@ -28,6 +28,7 @@ class SearchBar extends React.Component {
 					value={this.state.keyword}
 				/>
 				<Link to={`/search/${this.state.keyword}`}> Search</Link>
+				
 			</div>
 				
 		)

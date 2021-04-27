@@ -176,19 +176,23 @@ class Profile extends React.Component{
           }
         </div>
         <div>
-          {this.state.isFollowed
-          ? <button onClick={() => { 
-            this.unfollow(this.state.username); 
-            this.fetchUser()
-          }}> 
-            Unfollow 
-          </button>
-          : <button onClick={() => { 
-            this.follow(this.state.username); 
-            this.fetchUser()
-          }}> 
-            Follow 
-          </button>}
+          {this.state.username !== this.state.currentUser && 
+            <div>
+              {this.state.isFollowed
+              ? <button onClick={() => { 
+                this.unfollow(this.state.username); 
+                this.fetchUser()
+              }}> 
+                Unfollow 
+              </button>
+              : <button onClick={() => { 
+                this.follow(this.state.username); 
+                this.fetchUser()
+              }}> 
+                Follow 
+              </button>}
+            </div>
+          }
         </div>
         <UserList 
           userList = {this.state.followers} 

@@ -40,7 +40,7 @@ class MessageList extends React.Component {
                         {msg.author_username} 
                     </Link> : {msg.message} 
                     {this.props.currentUser === msg.author_username && 
-                        <button onClick={() => { this.deleteMessage(msg._id)}}> X </button> }
+                    <button onClick={() => { this.deleteMessage(msg._id)}}> X </button> }
                     
                     </li>}
                 </div>

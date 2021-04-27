@@ -1,12 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-
-// const serveur_config = {
-//   headers: {
-//     'Access-Control-Allow-Origin': "*",
-//     'Content-Type': 'application/json:charset=UTF-8',
-//   }
-// }
+import {withRouter} from "react-router-dom";
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -14,7 +8,7 @@ class SignUp extends React.Component {
     this.state = {
       lastname : "",
       firstname : "",
-      username : "",
+      currentUser : "",
       password : "",
       status : ""
     };
@@ -30,15 +24,18 @@ class SignUp extends React.Component {
   
   response_signup(response) {
     //console.log(response.data)
-    if(response.data["status"] === 401) {
-          const message = response.data["message"];
-          this.setState({status:"error", texterror:message})
-      } else {
-        this.props.setConnected(response.data["session_key"]);
-        this.setState({
-          username : response.data["username"]
-        })
-      }
+    if(response.data["status"] !== 200) {
+      this.setState({
+        status: response.data.["status"], 
+        texterror:response.data["message"]
+      })
+    } else {
+      this.props.setConnected(response.data["session_key"], response.data["username"]);
+      this.setState({
+        currentUser : response.data["username"]
+      })
+      this.props.history.push('/')
+    }
   }
 
   send() {
@@ -55,6 +52,9 @@ class SignUp extends React.Component {
             })
     .then(response => {
       this.response_signup(response);
+    })
+    .catch(error => {
+      this.response_signup(error.response);
     });
   }
 
@@ -102,8 +102,8 @@ class SignUp extends React.Component {
           </div>
           <div key={this.state.status}>
               {
-                (this.state.status === "error")
-                ? <span style={{color:"red"}}>{this.state.texterror}</span>
+                (this.state.status !== "")
+                ? <div style={{color:"red"}}>{this.state.texterror}</div>
                 : <span></span>
               }
               <button
@@ -117,4 +117,4 @@ class SignUp extends React.Component {
   };
 }
 
-export default SignUp;
+export default withRouter(SignUp);

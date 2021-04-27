@@ -8,7 +8,8 @@ import NavigationPanel from './NavigationPanel';
 import MessagesPage from './MessagesPage';
 import SearchPage from './SearchPage';
 import SignUp from './SignUp';
-import Profile from './Profile'
+import Profile from './Profile';
+import Login from './Login';
 
 class MainPage extends React.Component {
   constructor(props) {
@@ -55,19 +56,25 @@ class MainPage extends React.Component {
               renders the first one that matches the current URL. */}
           <Switch>
             <Route path="/user/:username">
-              { isConnected && <Profile currentUser={currentUser}/>}
+              { isConnected
+                ? <Profile currentUser={currentUser}/>
+                : <Login setConnected={this.setConnected }/>
+              }
             </Route>
             <Route path="/signup">
               <SignUp setConnected={ this.setConnected }/>
             </Route>
             <Route path="/search/:keyword">
-            { isConnected && 
-              <SearchPage currentUser={currentUser} />
-            }
+            { isConnected
+                ? <SearchPage currentUser={currentUser} />
+                : <Login setConnected={this.setConnected }/>
+              }
             </Route>
             <Route path="/">
-              { isConnected && 
-                <MessagesPage currentUser={currentUser} />
+              { isConnected 
+                ? <MessagesPage currentUser={currentUser} />
+                : <Login setConnected={this.setConnected } /> 
+
               }
             </Route>
           </Switch>

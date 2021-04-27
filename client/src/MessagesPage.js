@@ -114,7 +114,7 @@ class MessagesPage extends React.Component{
                   defaultChecked={this.state.filter}
                   onChange={this.handleFilter}
                 />
-                <label for="following"> Following only</label>
+                <label htmlFor="following"> Following only</label>
               </div>
               <MessageList 
                 messages = {this.state.messages} 

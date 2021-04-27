@@ -8,7 +8,8 @@ class Login extends React.Component {
     this.state = {
       username : "",
       password : "",
-      status : ""
+      status : "",
+      texterror : ""
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -22,9 +23,11 @@ class Login extends React.Component {
   
   response_login(response) {
     //console.log(response.data)
-    if(response.data["status"] === 401) {
-      const message = response.data["message"];
-      this.setState({status:"error", texterror:message})
+    if(response.data["status"] !== 200) {
+      this.setState({
+        status: response.data.["status"], 
+        texterror:response.data["message"]
+      })
     } else {
       this.props.setConnected(response.data["session_key"], response.data["username"]);
       this.props.history.push('/')
@@ -43,6 +46,9 @@ class Login extends React.Component {
             })
     .then(response => {
       this.response_login(response);
+    })
+    .catch(error => {
+      this.response_login(error.response);
     });
   }
 
@@ -72,8 +78,8 @@ class Login extends React.Component {
           </div>
           <div key={this.state.status}>
               {
-                (this.state.status === "error")
-                ? <span style={{color:"red"}}>{this.state.texterror}</span>
+                (this.state.status !== "error")
+                ? <div style={{color:"red"}}>{this.state.texterror}</div>
                 : <span></span>
               }
               <button
