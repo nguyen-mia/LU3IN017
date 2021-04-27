@@ -2,18 +2,20 @@ import React from 'react';
 import axios from 'axios';
 import MessageList from './MessageList';
 import MessageForm from './MessageForm';
-import SearchBar from './SearchBar';
-import { withRouter, Link} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 
 class SearchPage extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      currentUser : this.props.currentUser,
       messages : [],
       intervalID : null,
       status: "",
-      keyword: props.match.params.keyword
+      keyword: props.match.params.keyword,
+      filter : false,
+      following : []
     }
     this.fetch = this.fetch.bind(this)  
   }
@@ -62,16 +64,6 @@ class SearchPage extends React.Component{
     });
   }
 
-	
-  // componentWillReceiveProps(props) {
-  //   console.log('keyword: ', props.match.params.keyword);
-  //   var newKeyword = props.match.params.keyword;
-  //   if(this.state.keyword !== newKeyword) {
-  //       this.setState({keyword: newKeyword});
-  //   }
-	// }
-
-
   render(){
       return(
           <div className = "MessagesPage"> 
@@ -82,8 +74,12 @@ class SearchPage extends React.Component{
                   : <span></span>
                 }
               </div>
-              <MessageForm fetch = {this.fetch} username = {this.props.username}/> 
-              <MessageList messages = {this.state.messages} setProfile = {this.props.setProfile}/>
+              <MessageForm fetch = {this.fetch} currentUser = {this.props.currentUser}/> 
+              <MessageList 
+                messages = {this.state.messages} 
+                filter = {this.state.filter}
+                following = {this.state.following}
+                />
           </div> 
       );
   }

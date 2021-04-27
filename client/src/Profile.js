@@ -16,7 +16,8 @@ class Profile extends React.Component{
       firstname: "",
       followers : [],
       following : [],
-      isFollowed : false
+      isFollowed : false,
+      filter : false
     }
     this.fetchUser = this.fetchUser.bind(this)
     this.fetchMessage = this.fetchMessage.bind(this)
@@ -104,7 +105,6 @@ class Profile extends React.Component{
   }
 
   componentWillReceiveProps(props) {
-    console.log('username: ', props.match.params.username);
     var newUser = props.match.params.username;
     if(this.state.username !== newUser) {
         this.setState({username: newUser});
@@ -177,12 +177,41 @@ class Profile extends React.Component{
         </div>
         <div>
           {this.state.isFollowed
-          ? <button onClick={() => { this.unfollow(this.state.username) ; this.fetchUser()}}> Unfollow </button>
-          : <button onClick={() => { this.follow(this.state.username) ; this.fetchUser()}}> Follow </button>}
+          ? <button onClick={() => { 
+            this.unfollow(this.state.username); 
+            this.fetchUser()
+          }}> 
+            Unfollow 
+          </button>
+          : <button onClick={() => { 
+            this.follow(this.state.username); 
+            this.fetchUser()
+          }}> 
+            Follow 
+          </button>}
         </div>
-        <UserList userList = {this.state.followers} type ="followers" > FOLLOWERS </UserList>
-        <UserList userList = {this.state.following} type ="following" unfollow = {this.unfollow} fetchUser = {this.fetchUser} currentUser={this.props.currentUser}> FOLLOWING </UserList>
-        <MessageList messages = {this.state.messages} fetch = {this.fetchMessage} currentUser={this.props.currentUser}/>
+        <UserList 
+          userList = {this.state.followers} 
+          type ="followers" 
+        > 
+           
+        </UserList>
+        <UserList 
+          userList = {this.state.following} 
+          type ="following" 
+          unfollow = {this.unfollow} 
+          fetchUser = {this.fetchUser} 
+          currentUser={this.props.currentUser}
+        > 
+           
+        </UserList>
+        <MessageList 
+          messages = {this.state.messages} 
+          fetch = {this.fetchMessage} 
+          currentUser={this.props.currentUser}
+          filter = {this.state.filter}
+          following = {this.state.following}
+          />
       </div> 
     );
   }

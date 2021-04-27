@@ -44,13 +44,13 @@ class Messages {
     getUserMsg(username){
         return new Promise ((resolve, reject ) => {
             this.db.find ({author_username : username})
-                .sort({date : -1})
-                .exec( (err, data) => {
-                    if(err){
-                        reject(err);
-                    }else{
-                        resolve(data);
-                    }
+            .sort({date : -1})
+            .exec( (err, data) => {
+                if(err){
+                    reject(err);
+                }else{
+                    resolve(data);
+                }
             })
         })
     }
@@ -70,8 +70,9 @@ class Messages {
     search(keyword){
         let key = new RegExp(keyword, 'i')
         return new Promise ((resolve, reject) => {
-            this.db.find( { message: key} , (err, data) => {
-              
+            this.db.find( { message: key} )
+            .sort({date : -1})
+            .exec( (err, data) => {
                 if(err){
                     reject(err);
                 }else{

@@ -15,7 +15,7 @@ class NavigationPanel extends React.Component {
         ? <div>
             <Link to={`/user/${currentUser}`}>{currentUser} </Link>
             <Logout setLogout={setLogout} />
-            <SearchBar />
+            <SearchBar currentUser={currentUser}/>
           </div>
         : <div>
             <Login setConnected={setConnected } /> 

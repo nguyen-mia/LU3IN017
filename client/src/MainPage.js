@@ -2,8 +2,7 @@ import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 import NavigationPanel from './NavigationPanel';
 import MessagesPage from './MessagesPage';
@@ -62,7 +61,9 @@ class MainPage extends React.Component {
               <SignUp setConnected={ this.setConnected }/>
             </Route>
             <Route path="/search/:keyword">
+            { isConnected && 
               <SearchPage currentUser={currentUser} />
+            }
             </Route>
             <Route path="/">
               { isConnected && 

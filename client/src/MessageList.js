@@ -17,23 +17,42 @@ class MessageList extends React.Component {
       }
     
     render(){
-        const {messages} = this.props;
-        let res = messages.map((msg)=>{
+        const {messages, filter} = this.props;
+        let resSansF = messages.map((msg)=>{
             return <li key={msg._id}> 
                 <Link to={`/user/${msg.author_username}`}> 
                     {msg.author_username} 
                 </Link> : {msg.message} 
-                {this.props.currentUser == msg.author_username && 
+                {this.props.currentUser === msg.author_username && 
                     <button onClick={() => { this.deleteMessage(msg._id)}}> X </button> 
                 }
             </li>
         })
+
+        let follow_list = this.props.following.map((f) => {
+            return f.followee_id
+        })
+        let resAvecF = messages.map((msg)=>{
+            return <div>
+                { follow_list.indexOf(msg.author_username) > -1 
+                &&<li key={msg._id}> 
+                    <Link to={`/user/${msg.author_username}`}> 
+                        {msg.author_username} 
+                    </Link> : {msg.message} 
+                    {this.props.currentUser === msg.author_username && 
+                        <button onClick={() => { this.deleteMessage(msg._id)}}> X </button> }
+                    
+                    </li>}
+                </div>
+            
+        })
         return (
             <div className = 'MessageList'>
                 MESSAGES
-                <ul>
-                    {res}
-                </ul>
+                { filter 
+                    ? <ul> {resAvecF} </ul>
+                    : <ul> {resSansF} </ul>
+                }
             </div>
         )
     }
