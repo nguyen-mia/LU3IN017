@@ -3,13 +3,17 @@ import Logout from './Logout'
 import SearchBar from './SearchBar'
 import {Link, withRouter} from "react-router-dom";
 
+import "./css/NP.module.css";
+import styles from "./css/NP.module.css";
+
 class NavigationPanel extends React.Component {
 
   render() {
     const { setLogout, isConnected, currentUser} = this.props;
     
-    return <nav id="navPanel">
-      <Link to="/">Home</Link>
+    return <div classname = "NP">
+    <nav id="navPanel">
+      <Link className={styles.Home} to="/">Home</Link>
       {isConnected
         ? <div>
             <Link to={`/user/${currentUser}`}>{currentUser} </Link>
@@ -18,13 +22,14 @@ class NavigationPanel extends React.Component {
           </div>
         : <div>
             {this.props.location.pathname !== '/signup' && 
-              <Link to="/signup">S'inscrire</Link>
+              <Link className={styles.signup} to="/signup">Sign up</Link>
             } 
           </div>
       }
       {}
     
-    </nav>;
+    </nav>
+    </div>
   }
 }
 

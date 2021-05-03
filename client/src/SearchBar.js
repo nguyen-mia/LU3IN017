@@ -1,6 +1,9 @@
 import React from 'react'
 import { withRouter, Link} from "react-router-dom";
 
+import styles from './css/SearchBar.module.css';
+
+
 class SearchBar extends React.Component {
 	constructor(props){
 		super(props);
@@ -19,15 +22,17 @@ class SearchBar extends React.Component {
 
 	render(){
 		return (
-			<div>
-				<input
+			<div class={styles.search__container}>
+				<input class={styles.search__input} 
 					type="text"
-					placeholder="Search anything.."
+					placeholder="Search Gryphon"
 					name="keyword"
 					onChange={this.handleChange}
 					value={this.state.keyword}
 				/>
-				<Link to={`/search/${this.state.keyword}`}> Search</Link>
+				<Link class={styles.search__button}to={`/search/${this.state.keyword}`}> Search</Link>
+
+				
 				
 			</div>
 				

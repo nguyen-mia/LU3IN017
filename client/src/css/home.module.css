@@ -1,0 +1,23 @@
+.Logout{
+    margin: auto;
+    margin-top: -90px;
+    margin-left: 70px;
+    position: absolute;
+    top:100px;
+    left: 1000px;
+    
+    padding: 10px 20px;
+    border-radius:2em;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color:white;
+    background-color:#f14e4e;
+    border: 2px solid #f14e4e;
+    text-align:center;
+    transition: all 0.2s
+}
+
+
+

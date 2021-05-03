@@ -1,6 +1,9 @@
 import React from 'react'
 import axios from 'axios';
 
+import styles from './css/MessageForm.module.css';
+
+
 class MessageForm extends React.Component {
 	constructor(props){
 		super(props);
@@ -37,14 +40,14 @@ class MessageForm extends React.Component {
 	render(){
 		return (
 			<div>
-				<input
+				<input class={styles.minput}
 					type="text"
-					placeholder="Type anything.."
+					placeholder="What's happening?"
 					name="message"
 					onChange={this.handleChange}
 					value={this.state.message}
 				/>
-				<button onClick = { (event => this.createMessage()) } >
+				<button class={styles.post} onClick = { (event => this.createMessage()) } >
           Post
         </button>
 			</div>

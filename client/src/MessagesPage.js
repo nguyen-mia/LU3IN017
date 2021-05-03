@@ -4,6 +4,9 @@ import MessageList from './MessageList';
 import MessageForm from './MessageForm';
 import {withRouter} from "react-router-dom";
 
+import styles from './css/MessagesPage.module.css';
+
+
 
 class MessagesPage extends React.Component{
   constructor(props){
@@ -69,8 +72,12 @@ class MessagesPage extends React.Component{
           this.setState({status:"error", texterror:message})
     } else {
       this.setState({ 
-        following: response.data["following"]
+        following: response.data["following"] 
       })
+
+
+      console.log(response.data["following"] )
+      
     }
   }
   async fetchUser(){
@@ -102,26 +109,37 @@ class MessagesPage extends React.Component{
                   : <span></span>
                 }
               </div>
-              <MessageForm 
+              <MessageForm  
                 fetch = {this.fetch} 
                 currentUser = {this.props.currentUser}
               /> 
-              <div>
-                <input 
+              <div class={styles.container}>
+
+                <input classname = {styles.follonly}
                   type="checkbox" 
                   id="following" 
-                  name="following"               
+                  id="like" 
+                  class="sr-only"
+                  name="following"   
                   defaultChecked={this.state.filter}
                   onChange={this.handleFilter}
                 />
-                <label htmlFor="following"> Following only</label>
-              </div>
+                <label classname = {styles.lab} for="like" aria-hidden="true">❤</label>  
+     
+                </div>
+
+                <label  class = {styles.follonl} htmlFor="following"> 
+                    Following only
+                </label>
+            
+              
               <MessageList 
                 messages = {this.state.messages} 
                 fetch = {this.fetch} 
                 currentUser = {this.props.currentUser} 
                 filter = {this.state.filter}
                 following = {this.state.following}
+
               />
           </div> 
       );

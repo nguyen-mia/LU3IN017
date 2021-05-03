@@ -1,0 +1,48 @@
+
+
+h1 {
+    text-align: center;
+    color: rgb(170, 77, 77);
+}
+
+img {
+    margin: auto;
+    display: block;
+    width: 10%
+
+    
+}
+button{
+    width: 85px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style: none;
+}
+y {
+    top: 10;
+    bottom: 20;
+    right: 10;
+    left: 0;
+    width: 100%;
+    height: 10%;
+    background: rgb(76, 89, 133);
+    z-index: 0;
+    transform: skewY(0deg);
+    transform-origin: top right;
+  }
+
+  div {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #2c3e50;
+    z-index: 0;
+    transform: skewY(32deg);
+    transform-origin: top right;
+  }

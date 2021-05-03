@@ -4,6 +4,9 @@ import UserList from './UserList';
 import MessageList from './MessageList';
 import { withRouter } from "react-router-dom";
 
+import styles from './css/Profile.module.css';
+
+
 class Profile extends React.Component{
   constructor(props){
     super(props);
@@ -175,17 +178,17 @@ class Profile extends React.Component{
             : <span></span>
           }
         </div>
-        <div>
+        <div >
           {this.state.username !== this.state.currentUser && 
             <div>
               {this.state.isFollowed
-              ? <button onClick={() => { 
+              ? <button class = {styles.unfollow} onClick={() => { 
                 this.unfollow(this.state.username); 
                 this.fetchUser()
               }}> 
                 Unfollow 
               </button>
-              : <button onClick={() => { 
+              : <button class = {styles.follow} onClick={() => { 
                 this.follow(this.state.username); 
                 this.fetchUser()
               }}> 

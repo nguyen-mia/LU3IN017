@@ -2,6 +2,9 @@ import React from 'react';
 import axios from 'axios';
 import {withRouter} from "react-router-dom";
 
+import styles from './css/home.module.css';
+
+
 class Logout extends React.Component{
     constructor(props){
         super(props);
@@ -44,7 +47,7 @@ class Logout extends React.Component{
                 ? <span style={{color:"red"}}>{this.state.texterror}</span>
                 : <span></span>
               }
-              <button
+              <button className = {styles.Logout}
                 onClick = { (event => this.send()) }
               >
               Log Out

@@ -2,6 +2,9 @@ import React from 'react';
 import axios from 'axios';
 import {withRouter} from "react-router-dom";
 
+import styles from './css/Signup.module.css';
+import logo from './css/logo.png';
+
 class SignUp extends React.Component {
   constructor(props) {
     super(props);
@@ -26,7 +29,7 @@ class SignUp extends React.Component {
     //console.log(response.data)
     if(response.data["status"] !== 200) {
       this.setState({
-        status: response.data.["status"], 
+        status: response.data["status"], 
         texterror:response.data["message"]
       })
     } else {
@@ -60,12 +63,15 @@ class SignUp extends React.Component {
 
   render(){
 
-    return (
+    return (<section class={styles.container}>
+      <img className={styles.logo} src= {logo} alt="gryphon" /> 
+
       <nav>
           <div>
             <span>
-                  <div>First Name</div>
-                  <input
+                  <div></div>
+                  <input className={styles.firstname}
+                      placeholder = "First Name"
                       type="text"
                       name="firstname"
                       onChange={this.handleChange}
@@ -73,8 +79,9 @@ class SignUp extends React.Component {
                   />
               </span>
               <span>
-                  <div>Last Name</div>
-                  <input
+                  <div></div>
+                  <input className={styles.lastname}
+                      placeholder = "Last Name"
                       type="text"
                       name="lastname"
                       onChange={this.handleChange}
@@ -82,8 +89,9 @@ class SignUp extends React.Component {
                   />
               </span>
               <span>
-                  <div>Username</div>
-                  <input
+                  <div></div>
+                  <input className={styles.username}
+                      placeholder = "Username"
                       type="text"
                       name="username"
                       onChange={this.handleChange}
@@ -91,8 +99,9 @@ class SignUp extends React.Component {
                   />
               </span>
               <span>
-                  <div>Password</div>
-                  <input
+                  <div></div>
+                  <input className={styles.password}
+                      placeholder = "Password"
                       type="password"
                       name="password"
                       onChange={this.handleChange}
@@ -106,15 +115,17 @@ class SignUp extends React.Component {
                 ? <div style={{color:"red"}}>{this.state.texterror}</div>
                 : <span></span>
               }
-              <button
+              <button className={styles.signup}
                 onClick = { (event => this.send()) }
               >
               Sign Up
               </button>
           </div>
       </nav>
+      </section>
       );
   };
+  
 }
 
 export default withRouter(SignUp);

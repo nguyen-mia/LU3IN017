@@ -181,55 +181,7 @@ function init(userdb, msgdb) {
                 res.status(500).send(e);
             }
         })
-    
-    // router
-    //     .route("/:username/followings")
-    //     //list of people followed by <username>
-    //     .get(async (req, res) => {
-    //         try{
-    //             let result = await follows.getFollowing(req.params.username)
-    //             if (! result){
-    //                 res.status(-204).json({
-    //                     status: -204,
-    //                     message: "Erreur SQL"
-    //                 });
-    //             }else{
-    //                 res.send(result);
-    //             }
-    //         }catch(e) {
-    //             res.status(500).json({
-    //                 status: 500,
-    //                 message: "erreur interne",
-    //                 details: (e || "Erreur inconnue").toString()
-    //             });
-    //         }
-    //     })
-        
-    // router
-    //     .route("/:username/followers")
-    //     .get(async (req, res) => {
-    //         try {
-    //             let result = await follows.getFollowers(req.params.username)
-    //             if (! result){
-    //                 res.status(-204).json({
-    //                     status: -204,
-    //                     message: "Erreur SQL"
-    //                 });
-    //             }else{
-    //                 res.send(result);
-    //             }
-    //         }catch(e){
-    //             res.status(500).json({
-    //                 status: 500,
-    //                 message: "erreur interne",
-    //                 details: (e || "Erreur inconnue").toString()
-    //             });
 
-    //         }
-        
-    //     })
-        
-        
 
     
     return router;

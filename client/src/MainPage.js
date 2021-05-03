@@ -11,6 +11,8 @@ import SignUp from './SignUp';
 import Profile from './Profile';
 import Login from './Login';
 
+import styles from './css/MainPage.module.css';
+
 class MainPage extends React.Component {
   constructor(props) {
     super(props);
@@ -45,7 +47,7 @@ class MainPage extends React.Component {
     return (
       <Router>
         <div>
-          <NavigationPanel
+          <NavigationPanel 
             isConnected={isConnected}
             setConnected={ this.setConnected }
             setLogout={this.setLogout}  
